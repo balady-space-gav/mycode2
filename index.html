@@ -3,15 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الشهادات الصحية - أمانة منطقة الرياض</title>
+    <title>نظام الشهادات الصحية المطور - الترتيب النهائي المعتمد</title>
     
-    <!-- المكتبات المعتمدة لديك -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+        
+        :root {
+            --balady-green: #0a8243;
+            --text-dark: #000000;
+            --text-gray: #7a7a7a;
+            --line-color: #cccccc;
+        }
 
         * {
             box-sizing: border-box;
@@ -21,397 +27,568 @@
         }
 
         body {
-            background-color: #f4f6f9;
+            background-color: #f5f7fa;
             padding: 20px;
-            direction: rtl;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #fff;
+        /* --- استمارة البيانات --- */
+        .form-container {
+            background: #ffffff;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 650px;
+            margin-bottom: 20px;
         }
 
-        h2 {
+        .form-container h2 {
+            color: var(--balady-green);
+            margin-bottom: 20px;
             text-align: center;
-            margin-bottom: 30px;
-            color: #333;
             font-weight: 700;
+            border-bottom: 2px solid var(--balady-green);
+            padding-bottom: 10px;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
         }
 
         .form-group {
-            display: flex;
-            flex-direction: column;
+            margin-bottom: 10px;
         }
 
         .form-group.full-width {
             grid-column: span 2;
         }
 
-        label {
-            margin-bottom: 8px;
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
             font-weight: 600;
-            color: #555;
             font-size: 14px;
         }
 
-        input, select {
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
             font-size: 14px;
             outline: none;
-            background-color: #fafafa;
-        }
-
-        input:focus, select:focus {
-            border-color: #0e6243;
-            background-color: #fff;
         }
 
         .btn-submit {
-            grid-column: span 2;
-            background-color: #0e6243;
-            color: #fff;
-            padding: 14px;
+            background-color: var(--balady-green);
+            color: white;
             border: none;
-            border-radius: 4px;
+            padding: 14px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
             font-size: 16px;
             font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
-        .btn-submit:hover {
-            background-color: #0a4932;
+        /* --- حاوية المعاينة الثابتة بالأبعاد القياسية للطباعة --- */
+        .preview-wrapper {
+            display: none;
+            width: 440px;
         }
 
-        /* تنسيق كرت المعاينة الشهادة */
-        .preview-section {
-            margin-top: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .page-preview {
-            background: white;
-            width: 116mm;
-            height: 166mm;
-            padding: 10mm;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        .card-page {
+            background: #ffffff;
+            width: 440px;
+            height: 630px;
+            padding: 25px 35px;
             position: relative;
             box-sizing: border-box;
-            border: 1px solid #eee;
+            border: 1px solid #dcdcdc;
+            margin-bottom: 20px;
+            overflow: hidden;
+            scroll-margin-top: 20px; 
         }
 
-        .header-main {
+        /* --- الهيدر الموحد لصفحة 1 وصفحة 3 بنفس المقاسات تماماً --- */
+        .header-image-container {
+            width: 100%;
+            height: 70px;
+            margin-bottom: 20px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            margin-bottom: 15px;
         }
 
-        .header-titles h1 {
-            color: #0e6243;
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .header-titles p {
-            color: #7a7a7a;
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .logo-box img {
-            width: 60px;
-            height: 60px;
+        .header-uploaded-img {
+            width: 120%;
+            height: 150%;
             object-fit: contain;
         }
 
-        .meta-row {
+        .images-section {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            margin-bottom: 15px;
+            justify-content: flex-start; 
+            padding-right: 35px; 
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .qr-photo, .user-photo {
+            width: 115px;
+            height: 115px;
         }
 
         .user-photo {
-            width: 80px;
-            height: 100px;
-            border: 1px solid #ccc;
-            background-color: #f0f0f0;
+            object-fit: fill;
         }
 
-        .user-photo img {
+        .qr-photo img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
         }
 
-        .qr-box {
-            width: 90px;
-            height: 90px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .page-title {
+        .title-badge {
             text-align: center;
-            color: #0e6243;
-            font-size: 20px;
+            color: var(--balady-green);
+            font-size: 26px;
             font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
             margin-bottom: 10px;
         }
 
-        .data-table td {
-            padding: 5px 6px;
-            border: 1px solid #cccccc;
+        /* جدول الصفحة الأولى */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #666666;
+            font-size: 12px;
+        }
+        
+        .info-table td {
+            padding: 8px 5px;
+            vertical-align: middle;
         }
 
-        .data-table .field-label {
-            width: 35%;
-            font-weight: 600;
-            color: #333;
-            background-color: #fafafa;
+        .info-table tr.section-divider {
+            border-bottom: 3px solid #666666; 
+            background-color: #f9f9f9;
         }
 
-        .data-table .field-value {
-            width: 60%;
-            font-weight: 700;
-            color: #000;
+        .label-cell {
+            font-weight: 800; 
+            text-align: right;   
+            width: 35%; 
         }
 
-        .sep {
-            width: 5%;
+        .colon-cell {
             text-align: center;
-            color: #666;
+            width: 5%;
+            font-weight: 800;
         }
 
-        .line-break {
-            border-top: 2px solid #0e6243;
-            margin: 5px 0 10px 0;
+        .value-cell {
+            text-align: right; 
+            width: 60%;
+            font-weight: 700; 
         }
 
-        .footer-text {
-            position: absolute;
-            bottom: 10mm;
-            left: 10mm;
-            right: 10mm;
-            font-size: 9px;
-            color: #444;
-            line-height: 1.4;
+        /* --- الصفحة الثانية --- */
+        .back-page {
+            display: flex;
+            flex-direction: column;
+            padding: 50px 30px;
+            justify-content: center;
         }
 
-        .footer-bullet {
-            margin-bottom: 4px;
-            padding-right: 12px;
+        .terms-list {
+            list-style: none;
+            text-align: justify;
+        }
+
+        .terms-list li {
+            margin-bottom: 25px;
             position: relative;
+            padding-right: 25px;
         }
 
-        .footer-bullet::before {
-            content: "•";
+        .terms-list li h2 {
+            font-size: 19px;
+            font-weight: 800;
+            display: inline;
+            line-height: 1.5;
+            color: #000000;
+        }
+
+        .terms-list li::before {
+            content: "*";
             position: absolute;
             right: 0;
-            color: #0e6243;
+            top: 2px;
             font-weight: bold;
+            font-size: 24px;
+            color: #000000;
+        }
+
+        /* --- الصفحة الثالثة --- */
+        .third-page-balady {
+            background-color: #fafbfc;
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 3px solid var(--balady-green); 
+        }
+           
+        .balady-avatar-center-wrapper {
+            width: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 5px;
+            margin-top: -10px;
+        }
+
+        .balady-avatar-center {
+            width: 65px;
+            height: 75px;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .balady-avatar-center img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+        }
+
+        .balady-green-title {
+            color: var(--balady-green);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .balady-main-card {
+            background: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+            border: 1px solid #ededed;
+            width: 100%;
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .balady-group-label {
+            color: var(--balady-green);
+            font-size: 11px;
+            font-weight: 700;
+            text-align: right;
+            margin-top: 1px;
+        }
+
+        .balady-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            font-size: 12px;
+        }
+
+        .balady-item-name {
+            color: var(--text-dark);
+            font-weight: 700;
+            text-align: right;
+            width: 40%;
+        }
+
+        .balady-item-value {
+            color: var(--text-dark);
+            font-weight: 600;
+            text-align: right;
+            width: 60%;
+        }
+
+        .balady-separator {
+            width: 100%;
+            height: 2px;
+            background-color: var(--line-color);
+            margin: 3px 0;
+        }
+
+        .control-panel {
+            display: none;
+            width: 440px;
+            margin-top: 10px;
+        }
+
+        .btn-pdf {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
     </style>
 </head>
 <body>
 
-    <!-- الاستمارة الأصلية المليئة بالبيانات كما في صورتك تماماً -->
-    <div class="container" id="formContainer">
-        <h2>نظام الشهادات الصحية</h2>
-        <form id="mainForm" onsubmit="processForm(event)">
+    <div class="form-container" id="inputFormContainer">
+        <h2>نظام طباعة الشهادات الصحية المطور</h2>
+        <form id="certForm" onsubmit="processForm(event)">
             <div class="form-grid">
-                <div class="form-group">
-                    <label>رقم الشهادة</label>
-                    <input type="text" id="inCertNum" value="44" required>
-                </div>
-                <div class="form-group">
-                    <label>مكان الإصدار</label>
-                    <input type="text" id="inCertPlace" value="امانة منطقة الرياض" required>
-                </div>
-                <div class="form-group">
-                    <label>تاريخ الإصدار</label>
-                    <input type="text" id="inIssueDate" value="1447/12/24" required>
-                </div>
-                <div class="form-group">
-                    <label>نهاية الصلاحية</label>
-                    <input type="text" id="inExpiryDate" value="1448/12/24" required>
-                </div>
-                <div class="form-group full-width">
-                    <label>الاسم الكامل للعامل</label>
-                    <input type="text" id="inWorkerName" value="رياض الجشمي" required>
-                </div>
-                <div class="form-group">
-                    <label>رقم الهوية / الإقامة</label>
-                    <input type="text" id="inWorkerId" value="2628681591" required>
-                </div>
-                <div class="form-group">
-                    <label>الجنس</label>
-                    <input type="text" id="inWorkerGender" value="ذكر" required>
-                </div>
-                <div class="form-group">
-                    <label>الجنسية</label>
-                    <input type="text" id="inWorkerNation" value="يمني" required>
-                </div>
-                <div class="form-group">
-                    <label>المهنة</label>
-                    <input type="text" id="inWorkerJob" value="عامل تحميل وتنزيل" required>
-                </div>
-                <div class="form-group">
-                    <label>البرنامج التثقيفي</label>
-                    <input type="text" id="inProgName" value="مكتبة قرطاسية" required>
-                </div>
-                <div class="form-group">
-                    <label>تاريخ انتهاء البرنامج</label>
-                    <input type="text" id="inProgEnd" value="1450/12/12" required>
-                </div>
-                <div class="form-group full-width">
-                    <label>اسم المنشأة</label>
-                    <input type="text" id="inEstName" value="مؤسسة لؤلؤة التنظيم التجارية" required>
-                </div>
-                <div class="form-group full-width">
-                    <label>رقم رخصة المنشأة</label>
-                    <input type="text" id="inEstLicense" value="470120255988" required>
-                </div>
-                <div class="form-group full-width">
-                    <label>رابط الصورة الشخصية</label>
-                    <input type="text" id="inWorkerPhoto" value="https://i.imgur.com/r7Z2v8p.jpeg">
-                </div>
+                <div class="form-group"><label>صورة الشعار (الهيدر):</label><input type="file" id="inHeaderImg" accept="image/*" required></div>
+                <div class="form-group"><label>الصورة الشخصية للعامِل:</label><input type="file" id="inUserImg" accept="image/*" required></div>
                 
-                <button type="submit" class="btn-submit">توليد ومعاينة الـ 3 صفحات</button>
+                <div class="form-group"><label>رقم الشهادة:</label><input type="text" id="cNo" placeholder="26069-1447" required></div>
+                <div class="form-group"><label>مكان الإصدار:</label><input type="text" id="cPlace" placeholder="أمانة مدينة الرياض" required></div>
+                
+                <div class="form-group"><label>تاريخ الإصدار:</label><input type="text" id="cIssueDate" placeholder="1447/12/21" required></div>
+                <div class="form-group"><label>نهاية الصلاحية:</label><input type="text" id="cExpiryDate" placeholder="1448/12/21" required></div>
+                
+                <div class="form-group full-width"><label>الاسم الكامل للعامِل:</label><input type="text" id="cName" placeholder="MD IQBAL HOSSAIN" required></div>
+                
+                <div class="form-group"><label>رقم الهوية / الإقامة:</label><input type="text" id="cIdNo" placeholder="2500113531" required></div>
+                <div class="form-group"><label>الجنس:</label><input type="text" id="cGender" placeholder="ذكر" required></div>
+                
+                <div class="form-group"><label>الجنسية:</label><input type="text" id="cNat" placeholder="بنغلاديش" required></div>
+                <div class="form-group"><label>المهنة:</label><input type="text" id="cJob" placeholder="عامل مطبخ" required></div>
+                
+                <div class="form-group"><label>البرنامج التثقيفي:</label><input type="text" id="cProg" placeholder="منشآت الغذاء" required></div>
+                <div class="form-group"><label>تاريخ انتهاء البرنامج:</label><input type="text" id="cProgExp" placeholder="1450/12/28" required></div>
+                
+                <div class="form-group full-width"><label>اسم المنشأة:</label><input type="text" id="cFacName" placeholder="شركة عيادات صفا مكة" required></div>
+                <div class="form-group full-width"><label>رقم رخصة المنشأة:</label><input type="text" id="cFacLic" placeholder="43058039930" required></div>
             </div>
+            <button type="submit" class="btn-submit">توليد ومعاينة الـ 3 صفحات</button>
         </form>
     </div>
 
-    <!-- قسم المعاينة والكرت المعتمد والمطابق لصورتك تماماً -->
-    <div class="preview-section">
-        <div class="page-preview" id="page3">
-            <div class="header-main">
-                <div class="header-titles">
-                    <h1>أمانة منطقة الرياض</h1>
-                    <p>RIYADH REGION MUNICIPALITY</p>
-                </div>
-                <div class="logo-box">
-                    <img src="https://i.imgur.com/HEx64W3.png" alt="Logo">
+    <div class="preview-wrapper" id="previewWrapper">
+        
+        <div class="card-page" id="page1">
+            <div class="header-image-container">
+                <img id="outHeaderImg1" class="header-uploaded-img" src="">
+            </div>
+            <div class="images-section">
+                <div id="outQrImg" class="qr-photo"></div>
+                <img id="outUserImg1" class="user-photo">
+            </div>
+            <div class="title-badge">شهادة صحية</div>
+            <table class="info-table">
+                <tr><td class="label-cell">رقم الشهادة</td><td class="colon-cell">:</td><td class="value-cell" id="lCertNo"></td></tr>
+                <tr><td class="label-cell">مكان الإصدار</td><td class="colon-cell">:</td><td class="value-cell" id="lCertPlace"></td></tr>
+                <tr class="section-divider"><td class="label-cell">نهاية الصلاحية</td><td class="colon-cell">:</td><td class="value-cell" id="lExpiryDate"></td></tr>
+                
+                <tr><td class="label-cell">الاسم</td><td class="colon-cell">:</td><td class="value-cell" id="lName"></td></tr>
+                <tr><td class="label-cell">رقم الهوية</td><td class="colon-cell">:</td><td class="value-cell" id="lIdNo"></td></tr>
+                <tr><td class="label-cell">الجنس</td><td class="colon-cell">:</td><td class="value-cell" id="lGender"></td></tr>
+                <tr><td class="label-cell">الجنسية</td><td class="colon-cell">:</td><td class="value-cell" id="lNat"></td></tr>
+                <tr><td class="label-cell">المهنة</td><td class="colon-cell">:</td><td class="value-cell" id="lJob"></td></tr>
+            </table>
+        </div>
+
+        <div class="card-page back-page" id="page2">
+            <ul class="terms-list">
+                <li><h2>حامل هذه الشهادة حاصل على تقرير طبي يثبت خلوه من الأمراض المعدية وأجريت له التطعيمات التي تخوله للعمل في محلات الأغذية والصحة العامة</h2></li>
+                <li><h2>تشغيل عمال ليس لديهم شهادات صحية أو لديهم شهادات صحية منتهية يعاقب عليها النظام بغرامة مالية عن كل عامل</h2></li>
+                <li><h2>تجديد هذه الشهادة قبل انتهائها بثلاثين يوماً</h2></li>
+                <li><h2>لا تعتبر هذه الشهادة إثباتاً هوياً لحامليها</h2></li>
+                <li><h2>للتأكد من سلامة الشهادة يرجى زيارة موقع أمانة منطقة الرياض</h2></li>
+            </ul>
+        </div>
+
+        <div class="card-page third-page-balady" id="page3">
+            <div class="header-image-container">
+                <img id="outHeaderImg3" class="header-uploaded-img" src="">
+            </div>
+            
+            <div class="balady-avatar-center-wrapper">
+                <div class="balady-avatar-center">
+                    <img id="outUserImg3" src="">
                 </div>
             </div>
 
-            <div class="meta-row">
-                <div class="user-photo">
-                    <img id="outPhoto" src="https://i.imgur.com/r7Z2v8p.jpeg" alt="Worker">
-                </div>
-                <!-- مربع الكيو آر المحدث المربوط برابط جيت هاب تلقائياً -->
-                <div class="qr-box" id="originalQr"></div>
-            </div>
+            <div class="balady-green-title">شهادة صحية</div>
 
-            <div class="page-title">شهادة صحية</div>
+            <div class="balady-main-card">
+                <div class="balady-group-label">بيانات الشهادة:</div>
+                <div class="balady-row"><span class="balady-item-name">رقم الشهادة</span><span class="balady-item-value" id="vCertNo"></span></div>
+                <div class="balady-row"><span class="balady-item-name">تاريخ الإصدار</span><span class="balady-item-value" id="vIssueDate"></span></div>
+                <div class="balady-row"><span class="balady-item-name">نهاية الصلاحية</span><span class="balady-item-value" id="vExpiryDate"></span></div>
+                
+                <div class="balady-separator"></div>
 
-            <table class="data-table">
-                <tr><td class="field-label">رقم الشهادة</td><td class="sep">:</td><td class="field-value" id="outCertNum">44</td></tr>
-                <tr><td class="field-label">مكان الإصدار</td><td class="sep">:</td><td class="field-value" id="outCertPlace">امانة منطقة الرياض</td></tr>
-                <tr><td class="field-label">تاريخ الإصدار</td><td class="sep">:</td><td class="field-value" id="outIssueDate">1447/12/24</td></tr>
-                <tr><td class="field-label">نهاية الصلاحية</td><td class="sep">:</td><td class="field-value" id="outExpiryDate">1448/12/24</td></tr>
-            </table>
+                <div class="balady-group-label">بيانات صاحب الشهادة:</div>
+                <div class="balady-row"><span class="balady-item-name">الاسم</span><span class="balady-item-value" id="vName"></span></div>
+                <div class="balady-row"><span class="balady-item-name">رقم الهوية</span><span class="balady-item-value" id="vIdNo"></span></div>
+                <div class="balady-row"><span class="balady-item-name">الجنس</span><span class="balady-item-value" id="vGender"></span></div>
+                <div class="balady-row"><span class="balady-item-name">الجنسية</span><span class="balady-item-value" id="vNat"></span></div>
+                <div class="balady-row"><span class="balady-item-name">المهنة</span><span class="balady-item-value" id="vJob"></span></div>
+                <div class="balady-row"><span class="balady-item-name">البرنامج التثقيفي</span><span class="balady-item-value" id="vProg"></span></div>
+                <div class="balady-row"><span class="balady-item-name">تاريخ انتهاء البرنامج</span><span class="balady-item-value" id="vProgExp"></span></div>
+                
+                <div class="balady-separator"></div>
 
-            <div class="line-break"></div>
-
-            <table class="data-table">
-                <tr><td class="field-label">الاسم</td><td class="sep">:</td><td class="field-value" id="outWorkerName">رياض الجشمي</td></tr>
-                <tr><td class="field-label">رقم الهوية</td><td class="sep">:</td><td class="field-value" id="outWorkerId">2628681591</td></tr>
-                <tr><td class="field-label">الجنس</td><td class="sep">:</td><td class="field-value" id="outWorkerGender">ذكر</td></tr>
-                <tr><td class="field-label">الجنسية</td><td class="sep">:</td><td class="field-value" id="outWorkerNation">يمني</td></tr>
-                <tr><td class="field-label">المهنة</td><td class="sep">:</td><td class="field-value" id="outWorkerJob">عامل تحميل وتنزيل</td></tr>
-                <tr><td class="field-label">البرنامج التثقيفي</td><td class="sep">:</td><td class="field-value" id="outProgName">مكتبة قرطاسية</td></tr>
-                <tr><td class="field-label">تاريخ انتهاء البرنامج</td><td class="sep">:</td><td class="field-value" id="outProgEnd">1450/12/12</td></tr>
-                <tr><td class="field-label">اسم المنشأة</td><td class="sep">:</td><td class="field-value" id="outEstName">مؤسسة لؤلؤة التنظيم التجارية</td></tr>
-                <tr><td class="field-label">رقم رخصة المنشأة</td><td class="sep">:</td><td class="field-value" id="outEstLicense">470120255988</td></tr>
-            </table>
-
-            <div class="footer-text">
-                <div class="footer-bullet">حامل هذه الشهادة حاصل على تقرير طبي يثبت خلوه من الأمراض المعدية وأجريت له التطعيمات التي تخوله للعمل في محلات الأغذية والصحة العامة.</div>
-                <div class="footer-bullet">تشغيل عمال ليس لديهم شهادات صحية أو لديهم شهادات صحية منتهية يعاقب عليها النظام بغرامة مالية عن كل عامل.</div>
+                <div class="balady-group-label">بيانات المنشأة:</div>
+                <div class="balady-row"><span class="balady-item-name">اسم المنشأة</span><span class="balady-item-value" id="vFacName"></span></div>
+                <div class="balady-row"><span class="balady-item-name">رقم رخصة المنشأة</span><span class="balady-item-value" id="vFacLic"></span></div>
             </div>
         </div>
     </div>
 
+    <div class="control-panel" id="controlPanel">
+        <button class="btn-pdf" onclick="buildAbsolutePDF()">حفظ وتحميل الـ PDF النهائي المضمون 100%</button>
+    </div>
+
     <script>
-        // دالة تفحص الرابط عند الفتح لمعرفة ما إذا كان قادماً من مسح الكيو آر كود بالجوال
+        // فحص تلقائي عند بدء فتح الصفحة للتحقق من المسح بالجوال
         window.addEventListener('DOMContentLoaded', () => {
             const currentUrl = window.location.href;
             
-            // إذا كان الرابط يحتوي على معامل المعاينة المستهدفة، يتم إخفاء الاستمارة لعرض الكرت مباشرة
-            if (currentUrl.includes('view=target_preview')) {
-                document.getElementById('formContainer').style.display = 'none';
+            // إذا كان الرابط يحتوي على معامل التوجيه للجوال، نخفي الاستمارة والصفحات الأخرى ونعرض صفحة بلدي فقط
+            if (currentUrl.includes('view=page3')) {
+                document.getElementById('inputFormContainer').style.display = 'none';
+                document.getElementById('previewWrapper').style.display = 'block';
+                document.getElementById('page1').style.display = 'none';
+                document.getElementById('page2').style.display = 'none';
+                document.getElementById('page3').style.display = 'block';
             }
-            
-            // بناء الكيو آر كود التلقائي الذكي المعتمد على رابط الصفحة الحالي الديناميكي
-            generateTargetQR(window.location.href.split('?')[0] + "?view=target_preview");
         });
 
-        // دالة توليد الكيو آر كود بدقة واضحة تمنع الجمود وتفتح الصفحة المحددة مباشرة
-        function generateTargetQR(urlText) {
-            const qrContainer = document.getElementById("originalQr");
-            qrContainer.innerHTML = ""; 
+        function processForm(event) {
+            event.preventDefault();
+
+            const certNo = document.getElementById('cNo').value;
+
+            // 1. تعبئة بيانات جدول الصفحة الأولى التقليدية
+            document.getElementById('lCertNo').innerText = certNo;
+            document.getElementById('lCertPlace').innerText = document.getElementById('cPlace').value;
+            document.getElementById('lExpiryDate').innerText = document.getElementById('cExpiryDate').value;
+            document.getElementById('lName').innerText = document.getElementById('cName').value;
+            document.getElementById('lIdNo').innerText = document.getElementById('cIdNo').value;
+            document.getElementById('lGender').innerText = document.getElementById('cGender').value;
+            document.getElementById('lNat').innerText = document.getElementById('cNat').value;
+            document.getElementById('lJob').innerText = document.getElementById('cJob').value;
+        
+            // 2. تعبئة بيانات كارد الصفحة الثالثة
+            document.getElementById('vCertNo').innerText = certNo;
+            document.getElementById('vIssueDate').innerText = document.getElementById('cIssueDate').value;
+            document.getElementById('vExpiryDate').innerText = document.getElementById('cExpiryDate').value;
+            document.getElementById('vName').innerText = document.getElementById('cName').value;
+            document.getElementById('vIdNo').innerText = document.getElementById('cIdNo').value;
+            document.getElementById('vGender').innerText = document.getElementById('cGender').value;
+            document.getElementById('vNat').innerText = document.getElementById('cNat').value;
+            document.getElementById('vJob').innerText = document.getElementById('cJob').value;
+            document.getElementById('vProg').innerText = document.getElementById('cProg').value;
+            document.getElementById('vProgExp').innerText = document.getElementById('cProgExp').value;
+            document.getElementById('vFacName').innerText = document.getElementById('cFacName').value;
+            document.getElementById('vFacLic').innerText = document.getElementById('cFacLic').value;
+
+            // 3. التعديل الجوهري: توليد الرابط الحقيقي تلقائياً ليوجه الجوال للصفحة الثالثة مباشرة
+            document.getElementById("outQrImg").innerHTML = "";
             
-            new QRCode(qrContainer, {
-                text: urlText,
-                width: 95,
-                height: 95,
+            // قراءة رابط السيرفر المباشر الحالي (سواء جيت هاب أو سيرفر محلي) وإضافة أمر تشغيل الصفحة الثالثة
+            const liveTrackingUrl = window.location.origin + window.location.pathname + "?view=page3";
+
+            new QRCode(document.getElementById("outQrImg"), {
+                text: liveTrackingUrl,
+                width: 115,
+                height: 115,
                 colorDark : "#000000",
                 colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.M
+                correctLevel : QRCode.CorrectLevel.H
+            });
+
+            // 4. معالجة وتمرير الصور المرفوعة
+            const mapping = [
+                { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3' },
+                { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3' }
+            ];
+
+            let loadedCount = 0;
+            mapping.forEach(item => {
+                const file = document.getElementById(item.input).files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        if(item.view1) document.getElementById(item.view1).src = e.target.result;
+                        if(item.view3) document.getElementById(item.view3).src = e.target.result;
+                        
+                        loadedCount++;
+                        if(loadedCount === 2) {
+                            document.getElementById('inputFormContainer').style.display = 'none';
+                            document.getElementById('previewWrapper').style.display = 'block';
+                            document.getElementById('controlPanel').style.display = 'block';
+                        }
+                    }
+                    reader.readAsDataURL(file);
+                }
             });
         }
 
-        // دالة معالجة الزر الأخضر لربط المدخلات بالجدول وتحديث رابط الكيو آر كود فوراً
-        function processForm(event) {
-            event.preventDefault();
-            
-            document.getElementById('outCertNum').innerText = document.getElementById('inCertNum').value;
-            document.getElementById('outCertPlace').innerText = document.getElementById('inCertPlace').value;
-            document.getElementById('outIssueDate').innerText = document.getElementById('inIssueDate').value;
-            document.getElementById('outExpiryDate').innerText = document.getElementById('inExpiryDate').value;
-            document.getElementById('outWorkerName').innerText = document.getElementById('inWorkerName').value;
-            document.getElementById('outWorkerId').innerText = document.getElementById('inWorkerId').value;
-            document.getElementById('outWorkerGender').innerText = document.getElementById('inWorkerGender').value;
-            document.getElementById('outWorkerNation').innerText = document.getElementById('inWorkerNation').value;
-            document.getElementById('outWorkerJob').innerText = document.getElementById('inWorkerJob').value;
-            document.getElementById('outProgName').innerText = document.getElementById('inProgName').value;
-            document.getElementById('outProgEnd').innerText = document.getElementById('inProgEnd').value;
-            document.getElementById('outEstName').innerText = document.getElementById('inEstName').value;
-            document.getElementById('outEstLicense').innerText = document.getElementById('inEstLicense').value;
-            document.getElementById('outPhoto').src = document.getElementById('inWorkerPhoto').value;
-            
-            // قراءة رابط السيرفر المباشر الحالي (سواء جيت هاب أو غيره) وإضافة أمر فتح كرت الصفحة الثالثة تلقائياً
-            const liveUrlPath = window.location.href.split('?')[0] + "?view=target_preview";
-            generateTargetQR(liveUrlPath);
-            
-            alert("تم تحديث البيانات بامتياز وصناعة الكيو آر كود بنجاح! جربه الآن 🚀");
+        async function buildAbsolutePDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: [116, 166]
+            });
+
+            const p1 = document.getElementById('page1');
+            const p2 = document.getElementById('page2');
+            const p3 = document.getElementById('page3');
+            const filename = document.getElementById('cNo').value;
+
+            // تأمين ظهور الصفحة الثالثة في ملف الـ PDF حتى لو كانت مخفية في عرض الجوال
+            p1.style.display = 'block';
+            p2.style.display = 'block';
+            p3.style.display = 'block';
+
+            const opts = { scale: 4, useCORS: true, logging: false, backgroundColor: '#ffffff' };
+
+            try {
+                const c1 = await html2canvas(p1, opts);
+                pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
+
+                pdf.addPage([116, 166], 'portrait');
+                const c2 = await html2canvas(p2, opts);
+                pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
+
+                pdf.addPage([116, 166], 'portrait');
+                const c3 = await html2canvas(p3, opts);
+                pdf.addImage(c3.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
+
+                pdf.save('Balady_Final_Form_' + filename + '.pdf');
+
+                // إعادة تفعيل الوضع الأصلي بعد حفظ الملف لضمان استقرار العرض
+                if (window.location.href.includes('view=page3')) {
+                    p1.style.display = 'none';
+                    p2.style.display = 'none';
+                }
+            } catch (err) {
+                alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.');
+            }
         }
     </script>
 </body>
