@@ -552,13 +552,13 @@
             
             const localTrackingUrl = `${currentUrl}?view=page3&cNo=${encodeURIComponent(certNo)}&cPlace=${encodeURIComponent(cPlace)}&cExpiryDate=${encodeURIComponent(cExpiryDate)}&cName=${encodeURIComponent(cName)}&cIdNo=${encodeURIComponent(cIdNo)}&cGender=${encodeURIComponent(cGender)}&cNat=${encodeURIComponent(cNat)}&cJob=${encodeURIComponent(cJob)}&cIssueDate=${encodeURIComponent(cIssueDate)}&cProg=${encodeURIComponent(cProg)}&cProgExp=${encodeURIComponent(cProgExp)}&cFacName=${encodeURIComponent(cFacName)}&cFacLic=${encodeURIComponent(cFacLic)}`;
 
-            new QRCode(document.getElementById("outQrImg"), {
-                text: localTrackingUrl,
-                width: 115,
-                height: 115,
+            new QRCode(document.getElementById("qrcode"), {
+                text: window.location.href,
+                width: 256,
+                height: 256,
                 colorDark : "#000000",
                 colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
+                correctLevel : QRCode.CorrectLevel.L
             });
 
             // 4. معالجة وتمرير الصور المرفوعة وحفظها مؤقتاً لتظهر في الجوال
