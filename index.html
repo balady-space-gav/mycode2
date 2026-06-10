@@ -5,19 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام الشهادات الصحية - أمانة منطقة الرياض</title>
     
+    <!-- المكتبات المعتمدة لديك -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-
-        :root {
-            --balady-green: #0e6243;
-            --text-dark: #000000;
-            --text-gray: #7a7a7a;
-            --line-color: #cccccc;
-        }
 
         * {
             box-sizing: border-box;
@@ -27,394 +21,397 @@
         }
 
         body {
-            background-color: #f5f7fa;
+            background-color: #f4f6f9;
             padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            min-height: 100vh;
+            direction: rtl;
         }
 
-        #inputFormContainer {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            width: 100%;
-            max-width: 700px;
-            margin-bottom: 30px;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .form-title {
-            color: var(--balady-green);
-            margin-bottom: 20px;
+        h2 {
             text-align: center;
+            margin-bottom: 30px;
+            color: #333;
             font-weight: 700;
         }
 
-        .grid-inputs {
+        .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
         }
 
-        .input-group {
+        .form-group {
             display: flex;
             flex-direction: column;
         }
 
-        .input-group.full-width {
+        .form-group.full-width {
             grid-column: span 2;
         }
 
         label {
-            font-size: 13px;
+            margin-bottom: 8px;
             font-weight: 600;
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        input, select {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            outline: none;
+            color: #555;
             font-size: 14px;
         }
 
+        input, select {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+            background-color: #fafafa;
+        }
+
         input:focus, select:focus {
-            border-color: var(--balady-green);
+            border-color: #0e6243;
+            background-color: #fff;
         }
 
         .btn-submit {
             grid-column: span 2;
-            background-color: var(--balady-green);
-            color: white;
-            border: none;
+            background-color: #0e6243;
+            color: #fff;
             padding: 14px;
+            border: none;
+            border-radius: 4px;
             font-size: 16px;
-            font-weight: 700;
-            border-radius: 6px;
+            font-weight: bold;
             cursor: pointer;
-            margin-top: 15px;
-            transition: 0.3s;
+            transition: background 0.3s;
+            margin-top: 10px;
         }
 
         .btn-submit:hover {
             background-color: #0a4932;
         }
 
-        /* كرت الصفحة الثالثة */
-        #certificateWrapper {
+        /* تنسيق كرت المعاينة الشهادة */
+        .preview-section {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page-preview {
             background: white;
             width: 116mm;
             height: 166mm;
-            padding: 8mm 8mm;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 10mm;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             position: relative;
-            display: flex;
-            flex-direction: column;
+            box-sizing: border-box;
             border: 1px solid #eee;
         }
 
-        .cert-header {
+        .header-main {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        .header-text h1 {
-            color: var(--balady-green);
+        .header-titles h1 {
+            color: #0e6243;
             font-size: 18px;
             font-weight: 700;
         }
 
-        .header-text p {
-            color: var(--text-gray);
+        .header-titles p {
+            color: #7a7a7a;
             font-size: 10px;
             font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
-        .header-logo img {
-            width: 55px;
-            height: 55px;
+        .logo-box img {
+            width: 60px;
+            height: 60px;
             object-fit: contain;
         }
 
-        .identity-row {
+        .meta-row {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 25px;
-            margin-bottom: 10px;
+            gap: 30px;
+            margin-bottom: 15px;
         }
 
-        .photo-box {
-            width: 75px;
-            height: 95px;
-            border: 1px solid var(--line-color);
+        .user-photo {
+            width: 80px;
+            height: 100px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
         }
 
-        .photo-box img {
+        .user-photo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        #qrcode {
-            width: 85px;
-            height: 85px;
+        .qr-box {
+            width: 90px;
+            height: 90px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .cert-title {
+        .page-title {
             text-align: center;
-            color: var(--balady-green);
-            font-size: 18px;
+            color: #0e6243;
+            font-size: 20px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 15px;
         }
 
-        .info-table {
+        .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 11px;
-            margin-bottom: 5px;
+            font-size: 12px;
+            margin-bottom: 10px;
         }
 
-        .info-table td {
-            padding: 3px 4px;
-            border: 1px solid var(--line-color);
+        .data-table td {
+            padding: 5px 6px;
+            border: 1px solid #cccccc;
         }
 
-        .info-table .label-cell {
+        .data-table .field-label {
             width: 35%;
             font-weight: 600;
+            color: #333;
+            background-color: #fafafa;
         }
 
-        .info-table .value-cell {
+        .data-table .field-value {
             width: 60%;
             font-weight: 700;
+            color: #000;
         }
 
-        .info-table .sep-cell {
+        .sep {
             width: 5%;
             text-align: center;
+            color: #666;
         }
 
-        .divider-line {
-            border-top: 2px solid var(--balady-green);
-            margin: 4px 0;
+        .line-break {
+            border-top: 2px solid #0e6243;
+            margin: 5px 0 10px 0;
         }
 
-        .cert-footer {
-            margin-top: auto;
+        .footer-text {
+            position: absolute;
+            bottom: 10mm;
+            left: 10mm;
+            right: 10mm;
             font-size: 9px;
             color: #444;
-            line-height: 1.3;
+            line-height: 1.4;
         }
 
-        .footer-note {
-            position: relative;
-            padding-right: 12px;
+        .footer-bullet {
             margin-bottom: 4px;
+            padding-right: 12px;
+            position: relative;
         }
 
-        .footer-note::before {
+        .footer-bullet::before {
             content: "•";
             position: absolute;
             right: 0;
-            color: var(--balady-green);
+            color: #0e6243;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <!-- استمارة الإدخال الكاملة المليئة بجميع الخانات الـ 15 -->
-    <div id="inputFormContainer">
-        <h2 class="form-title">نظام الشهادات الصحية</h2>
-        <form id="certForm" onsubmit="generateSystem(event)">
-            <div class="grid-inputs">
-                <div class="input-group">
+    <!-- الاستمارة الأصلية المليئة بالبيانات كما في صورتك تماماً -->
+    <div class="container" id="formContainer">
+        <h2>نظام الشهادات الصحية</h2>
+        <form id="mainForm" onsubmit="processForm(event)">
+            <div class="form-grid">
+                <div class="form-group">
                     <label>رقم الشهادة</label>
-                    <input type="text" id="certNum" value="43243" required>
+                    <input type="text" id="inCertNum" value="44" required>
                 </div>
-                <div class="input-group">
+                <div class="form-group">
                     <label>مكان الإصدار</label>
-                    <input type="text" id="certPlace" value="امانة منطقة الرياض" required>
+                    <input type="text" id="inCertPlace" value="امانة منطقة الرياض" required>
                 </div>
-                <div class="input-group">
+                <div class="form-group">
                     <label>تاريخ الإصدار</label>
-                    <input type="text" id="certIssueDate" value="1447/12/24" required>
+                    <input type="text" id="inIssueDate" value="1447/12/24" required>
                 </div>
-                <div class="input-group">
+                <div class="form-group">
                     <label>نهاية الصلاحية</label>
-                    <input type="text" id="certExpiry" value="1448/12/24" required>
+                    <input type="text" id="inExpiryDate" value="1448/12/24" required>
                 </div>
-                <div class="input-group full-width">
+                <div class="form-group full-width">
                     <label>الاسم الكامل للعامل</label>
-                    <input type="text" id="workerName" value="رياض الجشمي" required>
+                    <input type="text" id="inWorkerName" value="رياض الجشمي" required>
                 </div>
-                <div class="input-group">
+                <div class="form-group">
                     <label>رقم الهوية / الإقامة</label>
-                    <input type="text" id="workerId" value="2628681591" required>
+                    <input type="text" id="inWorkerId" value="2628681591" required>
                 </div>
-                <div class="input-group">
+                <div class="form-group">
                     <label>الجنس</label>
-                    <input type="text" id="workerGender" value="ذكر" required>
+                    <input type="text" id="inWorkerGender" value="ذكر" required>
                 </div>
-                <div class="input-group">
+                <div class="form-group">
                     <label>الجنسية</label>
-                    <input type="text" id="workerNation" value="يمني" required>
+                    <input type="text" id="inWorkerNation" value="يمني" required>
                 </div>
-                <div class="input-group">
+                <div class="form-group">
                     <label>المهنة</label>
-                    <input type="text" id="workerJob" value="عامل تحميل وتنزيل" required>
+                    <input type="text" id="inWorkerJob" value="عامل تحميل وتنزيل" required>
                 </div>
-                <div class="input-group">
+                <div class="form-group">
                     <label>البرنامج التثقيفي</label>
-                    <input type="text" id="programName" value="مكتبة قرطاسية" required>
+                    <input type="text" id="inProgName" value="مكتبة قرطاسية" required>
                 </div>
-                <div class="input-group">
+                <div class="form-group">
                     <label>تاريخ انتهاء البرنامج</label>
-                    <input type="text" id="programEnd" value="1450/12/12" required>
+                    <input type="text" id="inProgEnd" value="1450/12/12" required>
                 </div>
-                <div class="input-group full-width">
+                <div class="form-group full-width">
                     <label>اسم المنشأة</label>
-                    <input type="text" id="establishmentName" value="مؤسسة لؤلؤة التنظيم التجارية" required>
+                    <input type="text" id="inEstName" value="مؤسسة لؤلؤة التنظيم التجارية" required>
                 </div>
-                <div class="input-group full-width">
+                <div class="form-group full-width">
                     <label>رقم رخصة المنشأة</label>
-                    <input type="text" id="establishmentLicense" value="470120255988" required>
+                    <input type="text" id="inEstLicense" value="470120255988" required>
                 </div>
-                <div class="input-group full-width">
+                <div class="form-group full-width">
                     <label>رابط الصورة الشخصية</label>
-                    <input type="text" id="workerPhoto" value="https://i.imgur.com/r7Z2v8p.jpeg">
+                    <input type="text" id="inWorkerPhoto" value="https://i.imgur.com/r7Z2v8p.jpeg">
                 </div>
+                
                 <button type="submit" class="btn-submit">توليد ومعاينة الـ 3 صفحات</button>
             </div>
         </form>
     </div>
 
-    <!-- كرت المعاينة (الصفحة الثالثة) -->
-    <div id="certificateWrapper">
-        <div class="cert-header">
-            <div class="header-text">
-                <h1>أمانة منطقة الرياض</h1>
-                <p>RIYADH REGION MUNICIPALITY</p>
+    <!-- قسم المعاينة والكرت المعتمد والمطابق لصورتك تماماً -->
+    <div class="preview-section">
+        <div class="page-preview" id="page3">
+            <div class="header-main">
+                <div class="header-titles">
+                    <h1>أمانة منطقة الرياض</h1>
+                    <p>RIYADH REGION MUNICIPALITY</p>
+                </div>
+                <div class="logo-box">
+                    <img src="https://i.imgur.com/HEx64W3.png" alt="Logo">
+                </div>
             </div>
-            <div class="header-logo">
-                <img src="https://i.imgur.com/HEx64W3.png" alt="Logo">
+
+            <div class="meta-row">
+                <div class="user-photo">
+                    <img id="outPhoto" src="https://i.imgur.com/r7Z2v8p.jpeg" alt="Worker">
+                </div>
+                <!-- مربع الكيو آر المحدث المربوط برابط جيت هاب تلقائياً -->
+                <div class="qr-box" id="originalQr"></div>
             </div>
-        </div>
 
-        <div class="identity-row">
-            <div class="photo-box">
-                <img id="displayPhoto" src="https://i.imgur.com/r7Z2v8p.jpeg" alt="Worker">
+            <div class="page-title">شهادة صحية</div>
+
+            <table class="data-table">
+                <tr><td class="field-label">رقم الشهادة</td><td class="sep">:</td><td class="field-value" id="outCertNum">44</td></tr>
+                <tr><td class="field-label">مكان الإصدار</td><td class="sep">:</td><td class="field-value" id="outCertPlace">امانة منطقة الرياض</td></tr>
+                <tr><td class="field-label">تاريخ الإصدار</td><td class="sep">:</td><td class="field-value" id="outIssueDate">1447/12/24</td></tr>
+                <tr><td class="field-label">نهاية الصلاحية</td><td class="sep">:</td><td class="field-value" id="outExpiryDate">1448/12/24</td></tr>
+            </table>
+
+            <div class="line-break"></div>
+
+            <table class="data-table">
+                <tr><td class="field-label">الاسم</td><td class="sep">:</td><td class="field-value" id="outWorkerName">رياض الجشمي</td></tr>
+                <tr><td class="field-label">رقم الهوية</td><td class="sep">:</td><td class="field-value" id="outWorkerId">2628681591</td></tr>
+                <tr><td class="field-label">الجنس</td><td class="sep">:</td><td class="field-value" id="outWorkerGender">ذكر</td></tr>
+                <tr><td class="field-label">الجنسية</td><td class="sep">:</td><td class="field-value" id="outWorkerNation">يمني</td></tr>
+                <tr><td class="field-label">المهنة</td><td class="sep">:</td><td class="field-value" id="outWorkerJob">عامل تحميل وتنزيل</td></tr>
+                <tr><td class="field-label">البرنامج التثقيفي</td><td class="sep">:</td><td class="field-value" id="outProgName">مكتبة قرطاسية</td></tr>
+                <tr><td class="field-label">تاريخ انتهاء البرنامج</td><td class="sep">:</td><td class="field-value" id="outProgEnd">1450/12/12</td></tr>
+                <tr><td class="field-label">اسم المنشأة</td><td class="sep">:</td><td class="field-value" id="outEstName">مؤسسة لؤلؤة التنظيم التجارية</td></tr>
+                <tr><td class="field-label">رقم رخصة المنشأة</td><td class="sep">:</td><td class="field-value" id="outEstLicense">470120255988</td></tr>
+            </table>
+
+            <div class="footer-text">
+                <div class="footer-bullet">حامل هذه الشهادة حاصل على تقرير طبي يثبت خلوه من الأمراض المعدية وأجريت له التطعيمات التي تخوله للعمل في محلات الأغذية والصحة العامة.</div>
+                <div class="footer-bullet">تشغيل عمال ليس لديهم شهادات صحية أو لديهم شهادات صحية منتهية يعاقب عليها النظام بغرامة مالية عن كل عامل.</div>
             </div>
-            <div id="qrcode"></div>
-        </div>
-
-        <div class="cert-title">شهادة صحية</div>
-
-        <table class="info-table">
-            <tr>
-                <td class="label-cell">رقم الشهادة</td><td class="sep-cell">:</td><td class="value-cell" id="lblCertNum">43243</td>
-            </tr>
-            <tr>
-                <td class="label-cell">مكان الإصدار</td><td class="sep-cell">:</td><td class="value-cell" id="lblCertPlace">امانة منطقة الرياض</td>
-            </tr>
-            <tr>
-                <td class="label-cell">تاريخ الإصدار</td><td class="sep-cell">:</td><td class="value-cell" id="lblCertIssueDate">1447/12/24</td>
-            </tr>
-            <tr>
-                <td class="label-cell">نهاية الصلاحية</td><td class="sep-cell">:</td><td class="value-cell" id="lblCertExpiry">1448/12/24</td>
-            </tr>
-        </table>
-
-        <div class="divider-line"></div>
-
-        <table class="info-table">
-            <tr>
-                <td class="label-cell">الاسم</td><td class="sep-cell">:</td><td class="value-cell" id="lblWorkerName">رياض الجشمي</td>
-            </tr>
-            <tr>
-                <td class="label-cell">رقم الهوية</td><td class="sep-cell">:</td><td class="value-cell" id="lblWorkerId">2628681591</td>
-            </tr>
-            <tr>
-                <td class="label-cell">الجنس</td><td class="sep-cell">:</td><td class="value-cell" id="lblWorkerGender">ذكر</td>
-            </tr>
-            <tr>
-                <td class="label-cell">الجنسية</td><td class="sep-cell">:</td><td class="value-cell" id="lblWorkerNation">يمني</td>
-            </tr>
-            <tr>
-                <td class="label-cell">المهنة</td><td class="sep-cell">:</td><td class="value-cell" id="lblWorkerJob">عامل تحميل وتنزيل</td>
-            </tr>
-            <tr>
-                <td class="label-cell">البرنامج التثقيفي</td><td class="sep-cell">:</td><td class="value-cell" id="lblProgramName">مكتبة قرطاسية</td>
-            </tr>
-            <tr>
-                <td class="label-cell">تاريخ انتهاء البرنامج</td><td class="sep-cell">:</td><td class="value-cell" id="lblProgramEnd">1450/12/12</td>
-            </tr>
-            <tr>
-                <td class="label-cell">اسم المنشأة</td><td class="sep-cell">:</td><td class="value-cell" id="lblEstablishmentName">مؤسسة لؤلؤة التنظيم التجارية</td>
-            </tr>
-            <tr>
-                <td class="label-cell">رقم رخصة المنشأة</td><td class="sep-cell">:</td><td class="value-cell" id="lblEstablishmentLicense">470120255988</td>
-            </tr>
-        </table>
-
-        <div class="cert-footer">
-            <div class="footer-note">حامل هذه الشهادة حاصل على تقرير طبي يثبت خلوه من الأمراض المعدية وأجريت له التطعيمات التي تخوله للعمل في محلات الأغذية والصحة العامة.</div>
-            <div class="footer-note">تشغيل عمال ليس لديهم شهادات صحية أو لديهم شهادات صحية منتهية يعاقب عليها النظام بغرامة مالية عن كل عامل.</div>
         </div>
     </div>
 
     <script>
+        // دالة تفحص الرابط عند الفتح لمعرفة ما إذا كان قادماً من مسح الكيو آر كود بالجوال
         window.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('view') === 'mobile' || /Android|iPhone|iPad/i.test(navigator.userAgent)) {
-                document.getElementById('inputFormContainer').style.display = 'none';
+            const currentUrl = window.location.href;
+            
+            // إذا كان الرابط يحتوي على معامل المعاينة المستهدفة، يتم إخفاء الاستمارة لعرض الكرت مباشرة
+            if (currentUrl.includes('view=target_preview')) {
+                document.getElementById('formContainer').style.display = 'none';
             }
-            buildCleanQR(window.location.href.split('?')[0] + "?view=mobile");
+            
+            // بناء الكيو آر كود التلقائي الذكي المعتمد على رابط الصفحة الحالي الديناميكي
+            generateTargetQR(window.location.href.split('?')[0] + "?view=target_preview");
         });
 
-        function buildCleanQR(targetUrl) {
-            const qrContainer = document.getElementById("qrcode");
-            qrContainer.innerHTML = "";
+        // دالة توليد الكيو آر كود بدقة واضحة تمنع الجمود وتفتح الصفحة المحددة مباشرة
+        function generateTargetQR(urlText) {
+            const qrContainer = document.getElementById("originalQr");
+            qrContainer.innerHTML = ""; 
+            
             new QRCode(qrContainer, {
-                text: targetUrl,
-                width: 110,
-                height: 110,
+                text: urlText,
+                width: 95,
+                height: 95,
                 colorDark : "#000000",
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.M
             });
         }
 
-        function generateSystem(event) {
+        // دالة معالجة الزر الأخضر لربط المدخلات بالجدول وتحديث رابط الكيو آر كود فوراً
+        function processForm(event) {
             event.preventDefault();
             
-            document.getElementById('lblCertNum').innerText = document.getElementById('certNum').value;
-            document.getElementById('lblCertPlace').innerText = document.getElementById('certPlace').value;
-            document.getElementById('lblCertIssueDate').innerText = document.getElementById('certIssueDate').value;
-            document.getElementById('lblCertExpiry').innerText = document.getElementById('certExpiry').value;
-            document.getElementById('lblWorkerName').innerText = document.getElementById('workerName').value;
-            document.getElementById('lblWorkerId').innerText = document.getElementById('workerId').value;
-            document.getElementById('lblWorkerGender').innerText = document.getElementById('workerGender').value;
-            document.getElementById('lblWorkerNation').innerText = document.getElementById('workerNation').value;
-            document.getElementById('lblWorkerJob').innerText = document.getElementById('workerJob').value;
-            document.getElementById('lblProgramName').innerText = document.getElementById('programName').value;
-            document.getElementById('lblProgramEnd').innerText = document.getElementById('programEnd').value;
-            document.getElementById('lblEstablishmentName').innerText = document.getElementById('establishmentName').value;
-            document.getElementById('lblEstablishmentLicense').innerText = document.getElementById('establishmentLicense').value;
-            document.getElementById('displayPhoto').src = document.getElementById('workerPhoto').value;
+            document.getElementById('outCertNum').innerText = document.getElementById('inCertNum').value;
+            document.getElementById('outCertPlace').innerText = document.getElementById('inCertPlace').value;
+            document.getElementById('outIssueDate').innerText = document.getElementById('inIssueDate').value;
+            document.getElementById('outExpiryDate').innerText = document.getElementById('inExpiryDate').value;
+            document.getElementById('outWorkerName').innerText = document.getElementById('inWorkerName').value;
+            document.getElementById('outWorkerId').innerText = document.getElementById('inWorkerId').value;
+            document.getElementById('outWorkerGender').innerText = document.getElementById('inWorkerGender').value;
+            document.getElementById('outWorkerNation').innerText = document.getElementById('inWorkerNation').value;
+            document.getElementById('outWorkerJob').innerText = document.getElementById('inWorkerJob').value;
+            document.getElementById('outProgName').innerText = document.getElementById('inProgName').value;
+            document.getElementById('outProgEnd').innerText = document.getElementById('inProgEnd').value;
+            document.getElementById('outEstName').innerText = document.getElementById('inEstName').value;
+            document.getElementById('outEstLicense').innerText = document.getElementById('inEstLicense').value;
+            document.getElementById('outPhoto').src = document.getElementById('inWorkerPhoto').value;
             
-            const productionUrl = window.location.href.split('?')[0] + "?view=mobile";
-            buildCleanQR(productionUrl);
+            // قراءة رابط السيرفر المباشر الحالي (سواء جيت هاب أو غيره) وإضافة أمر فتح كرت الصفحة الثالثة تلقائياً
+            const liveUrlPath = window.location.href.split('?')[0] + "?view=target_preview";
+            generateTargetQR(liveUrlPath);
             
-            alert("تم التحديث بنجاح! جرب امسح الكيو آر بجوالك الآن 🚀");
+            alert("تم تحديث البيانات بامتياز وصناعة الكيو آر كود بنجاح! جربه الآن 🚀");
         }
     </script>
 </body>
