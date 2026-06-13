@@ -37,7 +37,8 @@
 
         /* --- استمارة البيانات --- */
         .form-container {
-            background: #ffffff;
+            background: #ffffff !important;
+            color: #000000 !important;
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -47,7 +48,7 @@
         }
 
         .form-container h2 {
-            color: var(--balady-green);
+            color: var(--balady-green) !important;
             margin-bottom: 20px;
             text-align: center;
             font-weight: 700;
@@ -78,6 +79,7 @@
             margin-bottom: 5px;
             font-weight: 600;
             font-size: 14px;
+            color: #000000 !important;
         }
 
         .form-group input {
@@ -87,11 +89,13 @@
             border-radius: 6px;
             font-size: 14px;
             outline: none;
+            background-color: #ffffff !important;
+            color: #000000 !important;
         }
 
         .btn-submit {
             background-color: var(--balady-green);
-            color: white;
+            color: white !important;
             border: none;
             padding: 14px 20px;
             border-radius: 6px;
@@ -102,14 +106,15 @@
             margin-top: 15px;
         }
 
-        /* --- حاوية المعاينة الثابتة بالأبعاد القياسية للطباعة --- */
+        /* --- حاوية المعاينة --- */
         .preview-wrapper {
             display: none;
             width: 440px;
         }
 
         .card-page {
-            background: #ffffff;
+            background: #ffffff !important;
+            color: #000000 !important;
             width: 440px;
             height: 630px;
             padding: 25px 35px;
@@ -118,10 +123,8 @@
             border: 1px solid #dcdcdc;
             margin-bottom: 20px;
             overflow: hidden;
-            scroll-margin-top: 20px; 
         }
 
-        /* --- الهيدر الموحد لصفحة 1 وصفحة 3 بنفس المقاسات تماماً --- */
         .header-image-container {
             width: 100%;
             height: 70px;
@@ -152,6 +155,7 @@
 
         .user-photo {
             object-fit: fill;
+            background-color: #eee;
         }
 
         .qr-photo img {
@@ -162,28 +166,29 @@
 
         .title-badge {
             text-align: center;
-            color: var(--balady-green);
+            color: var(--balady-green) !important;
             font-size: 26px;
             font-weight: 700;
             margin-bottom: 10px;
         }
 
-        /* جدول الصفحة الأولى */
         .info-table {
             width: 100%;
             border-collapse: collapse;
             border: 2px solid #666666;
             font-size: 12px;
+            background: #ffffff !important;
         }
         
         .info-table td {
             padding: 8px 5px;
             vertical-align: middle;
+            color: #000000 !important;
         }
 
         .info-table tr.section-divider {
             border-bottom: 3px solid #666666; 
-            background-color: #f9f9f9;
+            background-color: #f9f9f9 !important;
         }
 
         .label-cell {
@@ -204,46 +209,9 @@
             font-weight: 700; 
         }
 
-        /* --- الصفحة الثانية --- */
-        .back-page {
-            display: flex;
-            flex-direction: column;
-            padding: 50px 30px;
-            justify-content: center;
-        }
-
-        .terms-list {
-            list-style: none;
-            text-align: justify;
-        }
-
-        .terms-list li {
-            margin-bottom: 25px;
-            position: relative;
-            padding-right: 25px;
-        }
-
-        .terms-list li h2 {
-            font-size: 19px;
-            font-weight: 800;
-            display: inline;
-            line-height: 1.5;
-            color: #000000;
-        }
-
-        .terms-list li::before {
-            content: "*";
-            position: absolute;
-            right: 0;
-            top: 2px;
-            font-weight: bold;
-            font-size: 24px;
-            color: #000000;
-        }
-
-        /* --- الصفحة الثالثة --- */
+        /* --- الصفحة الثالثة (صفحة الجوال بلدي) --- */
         .third-page-balady {
-            background-color: #fafbfc;
+            background-color: #fafbfc !important;
             padding: 10px 15px;
             display: flex;
             flex-direction: column;
@@ -266,6 +234,7 @@
             border-radius: 4px;
             overflow: hidden;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            background-color: #eee;
         }
 
         .balady-avatar-center img {
@@ -275,7 +244,7 @@
         }
 
         .balady-green-title {
-            color: var(--balady-green);
+            color: var(--balady-green) !important;
             font-size: 20px;
             font-weight: 700;
             margin-bottom: 8px;
@@ -283,7 +252,7 @@
         }
 
         .balady-main-card {
-            background: #ffffff;
+            background: #ffffff !important;
             border-radius: 6px;
             box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
             border: 1px solid #ededed;
@@ -295,7 +264,7 @@
         }
 
         .balady-group-label {
-            color: var(--balady-green);
+            color: var(--balady-green) !important;
             font-size: 11px;
             font-weight: 700;
             text-align: right;
@@ -308,17 +277,18 @@
             align-items: center;
             width: 100%;
             font-size: 12px;
+            margin: 2px 0;
         }
 
         .balady-item-name {
-            color: var(--text-dark);
+            color: #333333 !important;
             font-weight: 700;
             text-align: right;
             width: 40%;
         }
 
         .balady-item-value {
-            color: var(--text-dark);
+            color: #000000 !important;
             font-weight: 600;
             text-align: right;
             width: 60%;
@@ -339,7 +309,7 @@
 
         .btn-pdf {
             background-color: #d32f2f;
-            color: white;
+            color: white !important;
             border: none;
             padding: 15px 20px;
             border-radius: 6px;
@@ -392,7 +362,7 @@
             </div>
             <div class="images-section">
                 <div id="outQrImg" class="qr-photo"></div>
-                <img id="outUserImg1" class="user-photo">
+                <img id="outUserImg1" class="user-photo" src="">
             </div>
             <div class="title-badge">شهادة صحية</div>
             <table class="info-table">
@@ -408,15 +378,7 @@
             </table>
         </div>
 
-        <div class="card-page back-page" id="page2">
-            <ul class="terms-list">
-                <li><h2>حامل هذه الشهادة حاصل على تقرير طبي يثبت خلوه من الأمراض المعدية وأجريت له التطعيمات التي تخوله للعمل في محلات الأغذية والصحة العامة</h2></li>
-                <li><h2>تشغيل عمال ليس لديهم شهادات صحية أو لديهم شهادات صحية منتهية يعاقب عليها النظام بغرامة مالية عن كل عامل</h2></li>
-                <li><h2>تجديد هذه الشهادة قبل انتهائها بثلاثين يوماً</h2></li>
-                <li><h2>لا تعتبر هذه الشهادة إثباتاً هوياً لحامليها</h2></li>
-                <li><h2>للتأكد من سلامة الشهادة يرجى زيارة موقع أمانة منطقة الرياض</h2></li>
-            </ul>
-        </div>
+        <div class="card-page" id="page2" style="display:none;"></div>
 
         <div class="card-page third-page-balady" id="page3">
             <div class="header-image-container">
@@ -458,31 +420,30 @@
     </div>
 
     <div class="control-panel" id="controlPanel">
-        <button class="btn-pdf" onclick="buildAbsolutePDF()">حفظ وتحميل الـ PDF النهائي المضمون 100%</button>
+        <button class="btn-pdf" onclick="buildAbsolutePDF()">حفظ وتحميل الـ PDF النهائي</button>
     </div>
 
     <script>
-        // دالة مساعدة لقراءة المتغيرات من الرابط واستخراج البيانات عند الفتح بالجوال
+        // دالة استخراج البيانات الممررة عبر الرابط
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            var results = regex.exec(location.search);
+            var results = regex.exec(window.location.search);
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
 
-        // فحص تلقائي عند بدء فتح الصفحة للتحقق من المسح بالجوال
+        // الفحص عند فتح الصفحة
         window.addEventListener('DOMContentLoaded', () => {
-            const currentUrl = window.location.href;
+            const params = new URLSearchParams(window.location.search);
             
-            // إذا كان الرابط يحتوي على معامل التوجيه لصفحة بلدي
-            if (currentUrl.includes('view=page3')) {
+            // إذا كان الرابط يحتوي على حزمة البيانات المخصصة لصفحة بلدي
+            if (params.has('cNo') || window.location.href.includes('view=page3')) {
                 document.getElementById('inputFormContainer').style.display = 'none';
                 document.getElementById('previewWrapper').style.display = 'block';
                 document.getElementById('page1').style.display = 'none';
-                document.getElementById('page2').style.display = 'none';
                 document.getElementById('page3').style.display = 'block';
 
-                // سحب البيانات من الرابط تلقائياً وعرضها في كارد الصفحة الثالثة
+                // حقن البيانات في الحقول من الرابط مباشرة لتظهر فوراً بالجوال
                 document.getElementById('vCertNo').innerText = getUrlParameter('cNo');
                 document.getElementById('vIssueDate').innerText = getUrlParameter('cIDate');
                 document.getElementById('vExpiryDate').innerText = getUrlParameter('cEDate');
@@ -496,9 +457,9 @@
                 document.getElementById('vFacName').innerText = getUrlParameter('fName');
                 document.getElementById('vFacLic').innerText = getUrlParameter('fLic');
 
-                // استرجاع الصور المحفوظة مؤقتاً في الرابط (تظهر إذا كان المتصفح يدعم تخزين الجلسة)
-                if(sessionStorage.getItem('hImg')) document.getElementById('outHeaderImg3').src = sessionStorage.getItem('hImg');
-                if(sessionStorage.getItem('uImg')) document.getElementById('outUserImg3').src = sessionStorage.getItem('uImg');
+                // استرجاع الصور إذا تم فتحها على نفس المتصفح
+                if(localStorage.getItem('hImg')) document.getElementById('outHeaderImg3').src = localStorage.getItem('hImg');
+                if(localStorage.getItem('uImg')) document.getElementById('outUserImg3').src = localStorage.getItem('uImg');
             }
         });
 
@@ -519,7 +480,7 @@
             const cFacName = document.getElementById('cFacName').value;
             const cFacLic = document.getElementById('cFacLic').value;
 
-            // 1. تعبئة بيانات جدول الصفحة الأولى التقليدية
+            // 1. تعبئة الصفحة الأولى
             document.getElementById('lCertNo').innerText = certNo;
             document.getElementById('lCertPlace').innerText = cPlace;
             document.getElementById('lExpiryDate').innerText = cExpiryDate;
@@ -529,7 +490,7 @@
             document.getElementById('lNat').innerText = cNat;
             document.getElementById('lJob').innerText = cJob;
         
-            // 2. تعبئة بيانات كارد الصفحة الثالثة محلياً للـ PDF
+            // 2. تعبئة الصفحة الثالثة لمعاينة الـ الكمبيوتر
             document.getElementById('vCertNo').innerText = certNo;
             document.getElementById('vIssueDate').innerText = cIssueDate;
             document.getElementById('vExpiryDate').innerText = cExpiryDate;
@@ -543,9 +504,12 @@
             document.getElementById('vFacName').innerText = cFacName;
             document.getElementById('vFacLic').innerText = cFacLic;
 
-            // 3. بناء الرابط الحقيقي الحامل لكافة البيانات المدخلة لتمريرها عبر الـ QR
+            // 3. بناء الرابط الديناميكي الحامل للبيانات وحقنه داخل الـ QR كود
             document.getElementById("outQrImg").innerHTML = "";
             
+            // سحب الرابط الأساسي للموقع الحالي تلقائياً
+            const baseUrl = window.location.origin + window.location.pathname;
+
             let queryParams = `?view=page3` +
                               `&cNo=${encodeURIComponent(certNo)}` +
                               `&cIDate=${encodeURIComponent(cIssueDate)}` +
@@ -560,21 +524,22 @@
                               `&fName=${encodeURIComponent(cFacName)}` +
                               `&fLic=${encodeURIComponent(cFacLic)}`;
 
-            const liveTrackingUrl = window.location.origin + window.location.pathname + queryParams;
+            const fullLiveUrl = baseUrl + queryParams;
 
+            // توليد الـ QR كود بالرابط الحامل للبيانات
             new QRCode(document.getElementById("outQrImg"), {
-                text: liveTrackingUrl,
+                text: fullLiveUrl,
                 width: 115,
                 height: 115,
                 colorDark : "#000000",
                 colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.L // تم تقليل مستوى الأخطاء ليكون تصميم الـ QR خفيفاً ويستوعب البيانات
+                correctLevel : QRCode.CorrectLevel.L
             });
 
-            // 4. معالجة وتمرير الصور المرفوعة
+            // 4. معالجة وحفظ الصور
             const mapping = [
-                { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3', sessionKey: 'hImg' },
-                { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3', sessionKey: 'uImg' }
+                { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3', storeKey: 'hImg' },
+                { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3', storeKey: 'uImg' }
             ];
 
             let loadedCount = 0;
@@ -586,8 +551,9 @@
                         if(item.view1) document.getElementById(item.view1).src = e.target.result;
                         if(item.view3) document.getElementById(item.view3).src = e.target.result;
                         
-                        // حفظ حزمة الصورة نصياً لتمريرها محلياً إذا فُتح في نفس المتصفح
-                        sessionStorage.setItem(item.sessionKey, e.target.result);
+                        try {
+                            localStorage.setItem(item.storeKey, e.target.result);
+                        } catch(e) {}
                         
                         loadedCount++;
                         if(loadedCount === 2) {
@@ -602,44 +568,26 @@
         }
 
         async function buildAbsolutePDF() {
+            // كود الطباعة الافتراضي الخاص بك دون أي تعديل في جودته
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: [116, 166]
-            });
-
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [116, 166] });
             const p1 = document.getElementById('page1');
-            const p2 = document.getElementById('page2');
             const p3 = document.getElementById('page3');
             const filename = document.getElementById('cNo').value;
 
             p1.style.display = 'block';
-            p2.style.display = 'block';
             p3.style.display = 'block';
-
             const opts = { scale: 4, useCORS: true, logging: false, backgroundColor: '#ffffff' };
 
             try {
                 const c1 = await html2canvas(p1, opts);
                 pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-
-                pdf.addPage([116, 166], 'portrait');
-                const c2 = await html2canvas(p2, opts);
-                pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-
                 pdf.addPage([116, 166], 'portrait');
                 const c3 = await html2canvas(p3, opts);
                 pdf.addImage(c3.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-
                 pdf.save('Balady_Final_Form_' + filename + '.pdf');
-
-                if (window.location.href.includes('view=page3')) {
-                    p1.style.display = 'none';
-                    p2.style.display = 'none';
-                }
             } catch (err) {
-                alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.');
+                alert('حدث خطأ أثناء تحميل الملف.');
             }
         }
     </script>
