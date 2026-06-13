@@ -445,7 +445,7 @@
                 <div class="balady-row"><span class="balady-item-name">الجنس</span><span class="balady-item-value" id="vGender"></span></div>
                 <div class="balady-row"><span class="balady-item-name">الجنسية</span><span class="balady-item-value" id="vNat"></span></div>
                 <div class="balady-row"><span class="balady-item-name">المهنة</span><span class="balady-item-value" id="vJob"></span></div>
-                <div class="balady-row"><span class="balady-item-name">البرنامج التثقيفي</span><span class="balady-item-value" id="vProg"></span></div>
+                <div class="balady-row"><span class="balady-item-name">الالبرنامج التثقيفي</span><span class="balady-item-value" id="vProg"></span></div>
                 <div class="balady-row"><span class="balady-item-name">تاريخ انتهاء البرنامج</span><span class="balady-item-value" id="vProgExp"></span></div>
                 
                 <div class="balady-separator"></div>
@@ -464,15 +464,37 @@
     <script>
         // فحص تلقائي عند بدء فتح الصفحة للتحقق من المسح بالجوال عبر الـ QR
         window.addEventListener('DOMContentLoaded', () => {
-            const currentUrl = window.location.href;
+            const params = new URLSearchParams(window.location.search);
             
-            // إذا كان الرابط يحتوي على معامل التوجيه الخاص بالـ QR، نعرض صفحة بلدي الثالثة فقط ونخفي كل شيء آخر
-            if (currentUrl.includes('view=page3')) {
+            // إذا كان الرابط يحتوي على معامل التوجيه الخاص بالـ QR ومعه البيانات، نقرأها ونعرضها فوراً
+            if (params.has('view') && params.get('view') === 'page3') {
                 document.getElementById('inputFormContainer').style.display = 'none';
                 document.getElementById('previewWrapper').style.display = 'block';
                 document.getElementById('page1').style.display = 'none';
                 document.getElementById('page2').style.display = 'none';
                 document.getElementById('page3').style.display = 'block';
+
+                // تعبئة البيانات الثابتة من الرابط مباشرة إلى الصفحة الثالثة لتعمل بالجوال
+                document.getElementById('vCertNo').innerText = params.get('cNo') || '';
+                document.getElementById('vIssueDate').innerText = params.get('cIssueDate') || '';
+                document.getElementById('vExpiryDate').innerText = params.get('cExpiryDate') || '';
+                document.getElementById('vName').innerText = params.get('cName') || '';
+                document.getElementById('vIdNo').innerText = params.get('cIdNo') || '';
+                document.getElementById('vGender').innerText = params.get('cGender') || '';
+                document.getElementById('vNat').innerText = params.get('cNat') || '';
+                document.getElementById('vJob').innerText = params.get('cJob') || '';
+                document.getElementById('vProg').innerText = params.get('cProg') || '';
+                document.getElementById('vProgExp').innerText = params.get('cProgExp') || '';
+                document.getElementById('vFacName').innerText = params.get('cFacName') || '';
+                document.getElementById('vFacLic').innerText = params.get('cFacLic') || '';
+
+                // محاولة استرجاع الصور المحفوظة مؤقتاً إذا كانت موجودة
+                if(localStorage.getItem('headerImg')) {
+                    document.getElementById('outHeaderImg3').src = localStorage.getItem('headerImg');
+                }
+                if(localStorage.getItem('userImg')) {
+                    document.getElementById('outUserImg3').src = localStorage.getItem('userImg');
+                }
             }
         });
 
@@ -511,9 +533,24 @@
             // تعبئة البيانات في الحقول أولاً
             fillDataFields();
 
-            // 3. توليد الرابط تلقائياً ليوجه الـ QR لفتح الصفحة الثالثة فقط
+            // تجهيز البيانات الثابتة ليتم إرسالها داخل رابط الـ QR Code مباشرة
+            const cNo = encodeURIComponent(document.getElementById('cNo').value);
+            const cIssueDate = encodeURIComponent(document.getElementById('cIssueDate').value);
+            const cExpiryDate = encodeURIComponent(document.getElementById('cExpiryDate').value);
+            const cName = encodeURIComponent(document.getElementById('cName').value);
+            const cIdNo = encodeURIComponent(document.getElementById('cIdNo').value);
+            const cGender = encodeURIComponent(document.getElementById('cGender').value);
+            const cNat = encodeURIComponent(document.getElementById('cNat').value);
+            const cJob = encodeURIComponent(document.getElementById('cJob').value);
+            const cProg = encodeURIComponent(document.getElementById('cProg').value);
+            const cProgExp = encodeURIComponent(document.getElementById('cProgExp').value);
+            const cFacName = encodeURIComponent(document.getElementById('cFacName').value);
+            const cFacLic = encodeURIComponent(document.getElementById('cFacLic').value);
+
+            // 3. توليد الرابط مع حيازة كافة البيانات المدخلة لتقرأ على أي جوال
             document.getElementById("outQrImg").innerHTML = "";
-            const liveTrackingUrl = window.location.origin + window.location.pathname + "?view=page3";
+            const liveTrackingUrl = window.location.origin + window.location.pathname + 
+                `?view=page3&cNo=${cNo}&cIssueDate=${cIssueDate}&cExpiryDate=${cExpiryDate}&cName=${cName}&cIdNo=${cIdNo}&cGender=${cGender}&cNat=${cNat}&cJob=${cJob}&cProg=${cProg}&cProgExp=${cProgExp}&cFacName=${cFacName}&cFacLic=${cFacLic}`;
 
             new QRCode(document.getElementById("outQrImg"), {
                 text: liveTrackingUrl,
@@ -521,13 +558,13 @@
                 height: 115,
                 colorDark : "#000000",
                 colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
+                correctLevel : QRCode.CorrectLevel.L
             });
 
-            // 4. معالجة وتمرير الصور المرفوعة
+            // 4. معالجة وتمرير الصور المرفوعة وحفظها للعرض
             const mapping = [
-                { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3' },
-                { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3' }
+                { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3', key: 'headerImg' },
+                { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3', key: 'userImg' }
             ];
 
             let loadedCount = 0;
@@ -539,15 +576,17 @@
                         if(item.view1) document.getElementById(item.view1).src = e.target.result;
                         if(item.view3) document.getElementById(item.view3).src = e.target.result;
                         
+                        // حفظ اختياري محلي للصور لضمان ظهورها عند مسح الـ QR
+                        try { localStorage.setItem(item.key, e.target.result); } catch(e){}
+                        
                         loadedCount++;
                         if(loadedCount === 2) {
-                            // التعديل الرئيسي: إخفاء الفورم، وعرض الحاوية، مع إخفاء الصفحة الثالثة بالكامل من لوحة المعاينة
                             document.getElementById('inputFormContainer').style.display = 'none';
                             document.getElementById('previewWrapper').style.display = 'block';
                             
                             document.getElementById('page1').style.display = 'block';
                             document.getElementById('page2').style.display = 'block';
-                            document.getElementById('page3').style.display = 'none'; // مخفية في المعاينة العادية وتظهر عند المسح فقط
+                            document.getElementById('page3').style.display = 'none'; // تظل مخفية في المعاينة العادية وتظهر عند المسح فقط
                             
                             document.getElementById('controlPanel').style.display = 'block';
                         }
@@ -570,10 +609,7 @@
             const p3 = document.getElementById('page3');
             const filename = document.getElementById('cNo').value;
 
-            // حفظ الحالة الحالية لطريقة عرض الصفحة الثالثة لإعادتها لوضعها الصحيح لاحقاً
-            const isPage3OriginallyHidden = (p3.style.display === 'none');
-
-            // إظهار كافة الصفحات بشكل مؤقت لإجبار مكتبة html2canvas على التقاطها داخل ملف الـ PDF المطبوع
+            // إظهار كافة الصفحات بشكل مؤقت لالتقاطها داخل ملف الـ PDF
             p1.style.display = 'block';
             p2.style.display = 'block';
             p3.style.display = 'block';
@@ -594,7 +630,7 @@
 
                 pdf.save('Balady_Final_Form_' + filename + '.pdf');
 
-                // إعادة العناصر إلى وضعها الطبيعي بعد انتهاء التصدير بنجاح
+                // إعادة وضع الصفحات لما كانت عليه
                 if (window.location.href.includes('view=page3')) {
                     p1.style.display = 'none';
                     p2.style.display = 'none';
@@ -602,7 +638,7 @@
                 } else {
                     p1.style.display = 'block';
                     p2.style.display = 'block';
-                    p3.style.display = 'none'; // تظل مخفية في وضع المعاينة على الموقع
+                    p3.style.display = 'none';
                 }
             } catch (err) {
                 alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.');
