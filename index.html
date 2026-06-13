@@ -548,9 +548,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
             // 3. توليد الرابط مع حيازة كافة البيانات المدخلة لتقرأ على أي جوال
             document.getElementById("outQrImg").innerHTML = "";
-            const liveTrackingUrl = window.location.origin + window.location.pathname + 
-                `?view=page3&cNo=${cNo}&cIssueDate=${cIssueDate}&cExpiryDate=${cExpiryDate}&cName=${cName}&cIdNo=${cIdNo}&cGender=${cGender}&cNat=${cNat}&cJob=${cJob}&cProg=${cProg}&cProgExp=${cProgExp}&cFacName=${cFacName}&cFacLic=${cFacLic}`;
+          // 1. هنا نقوم بسحب القيم المدخلة من الفورم وتجهيزها للرابط
+const cNo = encodeURIComponent(document.getElementById('cNo').value);
+const cIssueDate = encodeURIComponent(document.getElementById('cIssueDate').value);
+const cExpiryDate = encodeURIComponent(document.getElementById('cExpiryDate').value);
+const cName = encodeURIComponent(document.getElementById('cName').value);
+const cIdNo = encodeURIComponent(document.getElementById('cIdNo').value);
+const cGender = encodeURIComponent(document.getElementById('cGender').value);
+const cNat = encodeURIComponent(document.getElementById('cNat').value);
+const cJob = encodeURIComponent(document.getElementById('cJob').value);
+const cProg = encodeURIComponent(document.getElementById('cProg').value);
+const cProgExp = encodeURIComponent(document.getElementById('cProgExp').value);
+const cFacName = encodeURIComponent(document.getElementById('cFacName').value);
+const cFacLic = encodeURIComponent(document.getElementById('cFacLic').value);
 
+// 2. هذا هو السطر الجديد الذي يجمع كل البيانات بجانب الكود الأول ليمررها عند المسح
+const liveTrackingUrl = window.location.origin + window.location.pathname + 
+    `?view=page3&cNo=${cNo}&cIssueDate=${cIssueDate}&cExpiryDate=${cExpiryDate}&cName=${cName}&cIdNo=${cIdNo}&cGender=${cGender}&cNat=${cNat}&cJob=${cJob}&cProg=${cProg}&cProgExp=${cProgExp}&cFacName=${cFacName}&cFacLic=${cFacLic}`;
             new QRCode(document.getElementById("outQrImg"), {
                 text: liveTrackingUrl,
                 width: 115,
