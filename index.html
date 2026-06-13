@@ -10,104 +10,69 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        /* استيراد خط "Cairo" الشهير والمناسب للتصاميم الحكومية والرسمية من قوقل */
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
         
-        /* تعريف متغيرات الألوان لتسهيل استخدامها وتوحيد الهوية البصرية (مثل لون منصة بلدي الأخضر) */
         :root {
-            --balady-green: #0a8243; /* الأخضر الرسمي */
-            --text-dark: #000000;    /* اللون الأسود للنصوص */
-            --text-gray: #7a7a7a;    /* اللون الرمادي للنصوص الثانوية */
-            --line-color: #cccccc;   /* لون الخطوط والحدود الفاصلة */
+            --balady-green: #0a8243;
+            --bright-green: #38ef7d; /* اللون الأخضر المضيء المتوافق مع الصورة */
+            --text-dark: #000000;
+            --text-gray: #7a7a7a;
+            --line-color: #cccccc;
         }
 
-        /* تصفير الهوامش الافتراضية للمتصفح وتطبيق خط Cairo على جميع عناصر الصفحة */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        
-        /* تنسيق خلفية الصفحة وجعل المحتوى يتوسط الشاشة عمودياً وأفقياً */
         body { background-color: #f5f7fa; padding: 20px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
 
-        /* تنسيق صندوق الإدخال (النموذج) الأبيض قبل توليد الشهادة */
         .form-container { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 650px; margin-bottom: 20px; }
-        /* تنسيق العنوان الرئيسي داخل صندوق الإدخال */
         .form-container h2 { color: var(--balady-green); margin-bottom: 20px; text-align: center; font-weight: 700; border-bottom: 2px solid var(--balady-green); padding-bottom: 10px; }
-        /* تقسيم حقول الإدخال إلى شبكة (عمودين بجانب بعضهما) */
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        /* تحويل الحقول إلى عمود واحد فوق بعضها في حال كانت الشاشة صغيرة كالهواتف */
         @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
-        /* مسافة أسفل كل مجموعة إدخال */
         .form-group { margin-bottom: 10px; }
-        /* جعل بعض الحقول تأخذ العرض كاملاً (تمدد على العمودين مثل الاسم والمنشأة) */
         .form-group.full-width { grid-column: span 2; }
-        /* تنسيق العنوان الصغير فوق كل حقل إدخال */
         .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
-        /* تنسيق مربعات الإدخال النصية والملفات */
         .form-group input { width: 100%; padding: 10px; border: 1px solid #cccccc; border-radius: 6px; font-size: 14px; }
-        /* تنسيق زر الإرسال الأخضر الكبير */
         .btn-submit { background-color: var(--balady-green); color: white; border: none; padding: 14px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; margin-top: 15px; }
 
-        /* حاوية المعاينة (تكون مخفية في البداية وتظهر بعد الضغط على الزر) */
         .preview-wrapper { display: none; width: 440px; }
-        /* تنسيق أبعاد وشكل صفحات الشهادة لتبدو كبطاقة رسمية */
         .card-page { background: #ffffff; width: 440px; height: 630px; padding: 25px 35px; border: 1px solid #dcdcdc; margin-bottom: 20px; overflow: hidden; position: relative; }
         
-        /* إخفاء الصفحة الثالثة (صفحة بلدي الكاملة) في الواجهة العادية حتى لا تظهر للمستخدم إلا عبر رابط الـ QR */
+        /* إخفاء الصفحة الثالثة تلقائياً في الواجهة العادية للوحة التحكم */
         #page3 { display: none; }
 
-        /* تنسيق مساحة الشعار العلوي (الهيدر) */
         .header-image-container { width: 100%; height: 70px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
-        /* جعل الشعار المرفوع يتناسب مع المساحة المتاحة بشكل لائق */
         .header-uploaded-img { width: 120%; height: 150%; object-fit: contain; }
-        /* قسم الصور (الـ QR والصورة الشخصية للعامِل) يوضعان بجانب بعضهما */
         .images-section { display: flex; justify-content: flex-start; padding-right: 35px; margin-bottom: 10px; gap: 10px; }
-        /* تحديد حجم ثابت وموحد للـ QR والصورة الشخصية */
         .qr-photo, .user-photo { width: 115px; height: 115px; }
-        /* جعل صورة العامل تملأ المربع بالكامل */
         .user-photo { object-fit: fill; }
-        /* ضبط ظهور كود الـ QR داخل الحاوية الخاصة به */
         .qr-photo img { width: 100%; height: 100%; object-fit: contain; }
-        /* تنسيق عنوان البطاقة (شهادة صحية) بالخط العريض والأخضر */
         .title-badge { text-align: center; color: var(--balady-green); font-size: 26px; font-weight: 700; margin-bottom: 10px; }
-        /* تنسيق جدول البيانات الداخلي للشهادة (الصفحة الأولى) */
         .info-table { width: 100%; border-collapse: collapse; border: 2px solid #666666; font-size: 12px; }
-        /* تنسيق خلايا الجدول والمسافات الداخلية */
         .info-table td { padding: 8px 5px; vertical-align: middle; }
-        /* تمييز سطر "نهاية الصلاحية" بخلفية مغايرة وخط فاصل سميك */
         .section-divider { border-bottom: 3px solid #666666; background-color: #f9f9f9; }
-        /* تحديد عروض الخطوط وخلفياتها (العنوان، النقطتان الرأسيتان، القيمة) للترتيب */
         .label-cell { font-weight: 800; text-align: right; width: 35%; }
         .colon-cell { text-align: center; width: 5%; font-weight: 800; }
         .value-cell { text-align: right; width: 60%; font-weight: 700; }
 
-        /* تنسيق ظهر البطاقة (الصفحة الثانية) التي تحتوي على الشروط والتعليمات */
         .back-page { display: flex; flex-direction: column; padding: 50px 30px; justify-content: center; }
         .terms-list { list-style: none; text-align: justify; }
         .terms-list li { margin-bottom: 25px; position: relative; padding-right: 25px; }
         .terms-list li h2 { font-size: 19px; font-weight: 800; display: inline; line-height: 1.5; }
-        /* إضافة علامة النجمة (*) بشكل تلقائي وجمالي قبل كل شرط */
         .terms-list li::before { content: "*"; position: absolute; right: 0; top: 2px; font-weight: bold; font-size: 24px; }
 
-        /* تنسيق الصفحة الثالثة الخاصة بنظام "بلدي" المطور */
-        .third-page-balady { background-color: #fafbfc; padding: 10px 15px; display: flex; flex-direction: column; align-items: center; border: 2px solid var(--balady-green); }
-        .balady-avatar-center-wrapper { width: 70%; display: flex; justify-content: center; margin-bottom: 3px; }
-        /* إطار الصورة الشخصية الدائري/المربع في صفحة بلدي */
-        .balady-avatar-center { width: 100px; height: 100px; border-radius: 1px; overflow: hidden; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
-        .balady-avatar-center img {  align-items: center; width: 100%; height: 100%; object-fit: fill; }
-        .balady-green-title { color: var(--balady-green); text-align: center; font-size: 20px; font-weight: 700; margin-bottom: 1px; }
-        /* تنسيق الكرت الأبيض الداخلي الشامل للبيانات */
-        .balady-main-card { background: #ffffff; border-radius: 4px; box-shadow: 0 1px 66px rgba(0, 0, 0, 0.04); border: 1px solid #ededed; width: 100%; padding: 10px 15px; }
-        /* عناوين المجموعات الفرعية (بيانات الشهادة، بيانات صاحب الشهادة...) */
-        .balady-group-label { color: var(--balady-green); font-size: 15px; font-weight: 700; text-align: right; }
-        /* أسطر البيانات (الاسم، الهوية وغيرها) موزعة يميناً ويساراً بالتساوي */
-        .balady-row { display: flex; justify-content: space-between; font-size: 12px; }
-        .balady-item-name { color: var(--text-dark); font-weight: 700; width: 40%; }
-        .balady-item-value { color: var(--text-dark); font-weight: 600; width: 60%; }
-        /* خط رمادي خفيف للفصل بين المجموعات داخل كرت بلدي */
-        .balady-separator { width: 100%; height: 2px; background-color: var(--line-color); margin: 3px 0; }
+        /* التنسيق الداكن للصفحة الثالثة ليطابق لقطة الشاشة تماماً */
+        .third-page-balady { background-color: #0d0e12; padding: 10px 15px; display: flex; flex-direction: column; align-items: center; border: 3px solid var(--balady-green); }
+        .balady-avatar-center-wrapper { width: 80%; display: flex; justify-content: center; margin-bottom: 5px; }
+        .balady-avatar-center { width: 65px; height: 75px; border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #ffffff; }
+        .balady-avatar-center img { width: 100%; height: 100%; object-fit: fill; }
+        .balady-green-title { color: var(--bright-green); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+        .balady-main-card { background: #11141a; border-radius: 6px; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04); border: 1px solid #1f2833; width: 100%; padding: 10px 15px; }
+        .balady-group-label { color: var(--bright-green); font-size: 11px; font-weight: 700; text-align: right; margin-top: 5px; }
+        .balady-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px; }
+        .balady-item-name { color: #ffffff; font-weight: 700; width: 40%; }
+        .balady-item-value { color: #b3b3b3; font-weight: 600; width: 60%; text-align: left; }
+        .balady-separator { width: 100%; height: 1px; background-color: #ffffff; margin: 6px 0; opacity: 0.5; }
 
-        /* لوحة التحكم السفلية التي تحتوي على زر الحفظ للـ PDF (مخفية في البداية) */
         .control-panel { display: none; width: 440px; margin-top: 10px; }
-        /* زر حفظ الـ PDF باللون الأحمر المميز */
         .btn-pdf { background-color: #d32f2f; color: white; border: none; padding: 15px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
     </style>
 </head>
@@ -119,7 +84,6 @@
             <div class="form-grid">
                 <div class="form-group"><label>صورة الشعار (الهيدر):</label><input type="file" id="inHeaderImg" accept="image/*" required></div>
                 <div class="form-group"><label>الصورة الشخصية للعامِل:</label><input type="file" id="inUserImg" accept="image/*" required></div>
-                
                 <div class="form-group"><label>رقم الشهادة:</label><input type="text" id="cNo" placeholder="26069-1447" required></div>
                 <div class="form-group"><label>مكان الإصدار:</label><input type="text" id="cPlace" placeholder="أمانة مدينة الرياض" required></div>
                 <div class="form-group"><label>تاريخ الإصدار:</label><input type="text" id="cIssueDate" placeholder="1447/12/21" required></div>
@@ -139,7 +103,6 @@
     </div>
 
     <div class="preview-wrapper" id="previewWrapper">
-        
         <div class="card-page" id="page1">
             <div class="header-image-container"><img id="outHeaderImg1" class="header-uploaded-img" src=""></div>
             <div class="images-section"><div id="outQrImg" class="qr-photo"></div><img id="outUserImg1" class="user-photo"></div>
@@ -175,6 +138,7 @@
                 <div class="balady-row"><span class="balady-item-name">رقم الشهادة</span><span class="balady-item-value" id="vCertNo"></span></div>
                 <div class="balady-row"><span class="balady-item-name">تاريخ الإصدار</span><span class="balady-item-value" id="vIssueDate"></span></div>
                 <div class="balady-row"><span class="balady-item-name">نهاية الصلاحية</span><span class="balady-item-value" id="vExpiryDate"></span></div>
+                
                 <div class="balady-separator"></div>
                 
                 <div class="balady-group-label">بيانات صاحب الشهادة:</div>
@@ -185,6 +149,7 @@
                 <div class="balady-row"><span class="balady-item-name">المهنة</span><span class="balady-item-value" id="vJob"></span></div>
                 <div class="balady-row"><span class="balady-item-name">البرنامج التثقيفي</span><span class="balady-item-value" id="vProg"></span></div>
                 <div class="balady-row"><span class="balady-item-name">تاريخ انتهاء البرنامج</span><span class="balady-item-value" id="vProgExp"></span></div>
+                
                 <div class="balady-separator"></div>
                 
                 <div class="balady-group-label">بيانات المنشأة:</div>
@@ -199,79 +164,38 @@
     </div>
 
     <script>
-        // دالة تعمل فور تحميل الصفحة؛ تفحص الرابط (URL) فإذا كان يحتوي على "?view=page3" (بمعنى تم مسحه بالـ QR)
-        // تقوم بإخفاء نموذج الإدخال والصفحات الأخرى، وتُبقي فقط صفحة بلدي الثالثة ظاهرة لمن يفحص الكود.
+        // دالة استقبال وقراءة الرابط الذكي وفك حقيبة البيانات عند مسح الـ QR
         window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            
             if (window.location.href.includes('view=page3')) {
                 document.getElementById('inputFormContainer').style.display = 'none';
                 document.getElementById('previewWrapper').style.display = 'block';
                 document.getElementById('page1').style.display = 'none';
                 document.getElementById('page2').style.display = 'none';
                 document.getElementById('page3').style.display = 'block';
+                
+                // سحب البيانات من الرابط وحقنها في الواجهة تلقائياً
+                if(params.has('certNo')) document.getElementById('vCertNo').innerText = params.get('certNo');
+                if(params.has('issueDate')) document.getElementById('vIssueDate').innerText = params.get('issueDate');
+                if(params.has('expiryDate')) document.getElementById('vExpiryDate').innerText = params.get('expiryDate');
+                if(params.has('name')) document.getElementById('vName').innerText = params.get('name');
+                if(params.has('idNo')) document.getElementById('vIdNo').innerText = params.get('idNo');
+                if(params.has('gender')) document.getElementById('vGender').innerText = params.get('gender');
+                if(params.has('nat')) document.getElementById('vNat').innerText = params.get('nat');
+                if(params.has('job')) document.getElementById('vJob').innerText = params.get('job');
+                if(params.has('prog')) document.getElementById('vProg').innerText = params.get('prog');
+                if(params.has('progExp')) document.getElementById('vProgExp').innerText = params.get('progExp');
+                if(params.has('facName')) document.getElementById('vFacName').innerText = params.get('facName');
+                if(params.has('facLic')) document.getElementById('vFacLic').innerText = params.get('facLic');
             }
         });
-        window.addEventListener('DOMContentLoaded', () => {
-    // فحص الرابط إذا كان يحتوي على بيانات قادمة من الـ QR
-    const params = new URLSearchParams(window.location.search);
-    
-    if (window.location.href.includes('view=page3')) {
-        // إخفاء الفراغات وإظهار صفحة بلدي الثالثة فقط
-        document.getElementById('inputFormContainer').style.display = 'none';
-        document.getElementById('previewWrapper').style.display = 'block';
-        document.getElementById('page1').style.display = 'none';
-        document.getElementById('page2').style.display = 'none';
-        document.getElementById('page3').style.display = 'block';
-        
-        // قراءة البيانات من الرابط وحقنها في مكانها داخل الصفحة الثالثة تلقائياً
-        if(params.has('certNo')) document.getElementById('vCertNo').innerText = params.get('certNo');
-        if(params.has('issueDate')) document.getElementById('vIssueDate').innerText = params.get('issueDate');
-        if(params.has('expiryDate')) document.getElementById('vExpiryDate').innerText = params.get('expiryDate');
-        if(params.has('name')) document.getElementById('vName').innerText = params.get('name');
-        if(params.has('idNo')) document.getElementById('vIdNo').innerText = params.get('idNo');
-        if(params.has('gender')) document.getElementById('vGender').innerText = params.get('gender');
-        if(params.has('nat')) document.getElementById('vNat').innerText = params.get('nat');
-        if(params.has('job')) document.getElementById('vJob').innerText = params.get('job');
-        if(params.has('prog')) document.getElementById('vProg').innerText = params.get('prog');
-        if(params.has('progExp')) document.getElementById('vProgExp').innerText = params.get('progExp');
-        if(params.has('facName')) document.getElementById('vFacName').innerText = params.get('facName');
-        if(params.has('facLic')) document.getElementById('vFacLic').innerText = params.get('facLic');
-    }
-});
-        // 1. تجميع البيانات من حقول الإدخال وتحويلها إلى صيغة تناسب الروابط (URL)
-const params = new URLSearchParams({
-    view: 'page3',
-    certNo: document.getElementById('cNo').value,
-    issueDate: document.getElementById('cIssueDate').value,
-    expiryDate: document.getElementById('cExpiryDate').value,
-    name: document.getElementById('cName').value,
-    idNo: document.getElementById('cIdNo').value,
-    gender: document.getElementById('cGender').value,
-    nat: document.getElementById('cNat').value,
-    job: document.getElementById('cJob').value,
-    prog: document.getElementById('cProg').value,
-    progExp: document.getElementById('cProgExp').value,
-    facName: document.getElementById('cFacName').value,
-    facLic: document.getElementById('cFacLic').value
-});
 
-// 2. دمج البيانات مع رابط موقعك الأساسي على جيتهاب لإنشاء الرابط الكامل
-const liveTrackingUrl = window.location.origin + window.location.pathname + "?" + params.toString();
-
-// 3. مسح الـ QR القديم وتوليد الجديد بالرابط المليء بالبيانات
-document.getElementById("outQrImg").innerHTML = "";
-new QRCode(document.getElementById("outQrImg"), { 
-    text: liveTrackingUrl, 
-    width: 115, 
-    height: 115, 
-    correctLevel: QRCode.CorrectLevel.H 
-});
-
-        // دالة معالجة النموذج عند الضغط على زر "توليد الشهادة"
         function processForm(event) {
-            event.preventDefault(); // منع الصفحة من إعادة التحميل الافتراضي عند إرسال الفورم
+            event.preventDefault();
             const certNo = document.getElementById('cNo').value;
 
-            // نقل البيانات المكتوبة في المدخلات وحقنها داخل نصوص الجدول في الصفحة الأولى (id يبدأ بـ l)
+            // تحديث نصوص صفحة المعاينة الأولى
             document.getElementById('lCertNo').innerText = certNo;
             document.getElementById('lCertPlace').innerText = document.getElementById('cPlace').value;
             document.getElementById('lExpiryDate').innerText = document.getElementById('cExpiryDate').value;
@@ -281,7 +205,7 @@ new QRCode(document.getElementById("outQrImg"), {
             document.getElementById('lNat').innerText = document.getElementById('cNat').value;
             document.getElementById('lJob').innerText = document.getElementById('cJob').value;
         
-            // نقل البيانات المكتوبة وحقنها داخل نصوص واجهة بلدي المكتملة في الصفحة الثالثة (id يبدأ بـ v)
+            // تحديث نصوص صفحة المعاينة الثالثة
             document.getElementById('vCertNo').innerText = certNo;
             document.getElementById('vIssueDate').innerText = document.getElementById('cIssueDate').value;
             document.getElementById('vExpiryDate').innerText = document.getElementById('cExpiryDate').value;
@@ -295,82 +219,81 @@ new QRCode(document.getElementById("outQrImg"), {
             document.getElementById('vFacName').innerText = document.getElementById('cFacName').value;
             document.getElementById('vFacLic').innerText = document.getElementById('cFacLic').value;
 
-            // تفريغ مكان الـ QR القديم إن وُجد، ثم بناء رابط تتبع حي يعتمد على رابط الملف الحالي مضافاً إليه أمر عرض الصفحة الثالثة
+            // بناء الرابط الذكي المطور (تجميع المدخلات داخل الرابط لكي تنتقل عبر الـ QR)
+            const queryParams = new URLSearchParams({
+                view: 'page3',
+                certNo: certNo,
+                issueDate: document.getElementById('cIssueDate').value,
+                expiryDate: document.getElementById('cExpiryDate').value,
+                name: document.getElementById('cName').value,
+                idNo: document.getElementById('cIdNo').value,
+                gender: document.getElementById('cGender').value,
+                nat: document.getElementById('cNat').value,
+                job: document.getElementById('cJob').value,
+                prog: document.getElementById('cProg').value,
+                progExp: document.getElementById('cProgExp').value,
+                facName: document.getElementById('cFacName').value,
+                facLic: document.getElementById('cFacLic').value
+            });
+
+            // دمج حقيبة البيانات مع نطاق الموقع الخاص بك تلقائياً على جيت هاب
+            const liveTrackingUrl = window.location.origin + window.location.pathname + "?" + queryParams.toString();
+
+            // مسح وتوليد كود الـ QR الجديد الحامل للرابط الذكي المطور
             document.getElementById("outQrImg").innerHTML = "";
-            const liveTrackingUrl = window.location.origin + window.location.pathname + "?view=page3";
-            // توليد رمز الاستجابة السريعة (QR Code) وتوجيهه للرابط الحي
             new QRCode(document.getElementById("outQrImg"), { text: liveTrackingUrl, width: 115, height: 115, correctLevel: QRCode.CorrectLevel.H });
 
-            // مصفوفة لربط حقول الملفات المرفوعة بأماكن عرضها في الصفحات (الشعار والصورة الشخصية)
             const mapping = [
-                { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3' }, // الهيدر يعرض في صفحة 1 و 3
-                { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3' }       // صورة العامل تعرض في صفحة 1 و 3
+                { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3' },
+                { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3' }
             ];
 
-            let loadedCount = 0; // عداد للتأكد من قراءة الملفين بالكامل
+            let loadedCount = 0;
             mapping.forEach(item => {
                 const file = document.getElementById(item.input).files[0];
                 if(file) {
-                    const reader = new FileReader(); // أداة لقراءة الملفات وتحويلها لروابط رقمية DataURL
+                    const reader = new FileReader();
                     reader.onload = function(e) {
-                        // وضع الصورة المقروءة في عناصر الـ <img> المحددة لها
                         if(item.view1) document.getElementById(item.view1).src = e.target.result;
                         if(item.view3) document.getElementById(item.view3).src = e.target.result;
                         loadedCount++;
-                        
-                        // بمجرد انتهاء رفع وقراءة كلا الصورتين، نقوم بإخفاء الفورم وإظهار المعاينة النهائية والتحكم بالـ PDF
                         if(loadedCount === 2) {
                             document.getElementById('inputFormContainer').style.display = 'none';
                             document.getElementById('previewWrapper').style.display = 'block';
                             document.getElementById('page1').style.display = 'block';
                             document.getElementById('page2').style.display = 'block';
-                            document.getElementById('page3').style.display = 'none'; // تبقى الصفحة 3 مخفية لأنها مخصصة للـ QR فقط
+                            document.getElementById('page3').style.display = 'none'; 
                             document.getElementById('controlPanel').style.display = 'block';
                         }
                     }
-                    reader.readAsDataURL(file); // تشغيل قارئ الملفات
+                    reader.readAsDataURL(file);
                 }
             });
         }
 
-        // الدالة المسؤولة عن تحويل الصفحات لملف PDF نهائي ثلاثي الصفحات بشكل احترافي ومتناسق
         async function buildAbsolutePDF() {
             const { jsPDF } = window.jspdf;
-            // إنشاء مستند PDF جديد بالأبعاد الدقيقة المتوافقة مع أبعاد البطاقات المصممة بالـ CSS [116mm x 166mm]
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [116, 166] });
             const p1 = document.getElementById('page1'), p2 = document.getElementById('page2'), p3 = document.getElementById('page3');
-            const filename = document.getElementById('cNo').value; // تسمية الملف برقم الشهادة المكتوب
+            const filename = document.getElementById('cNo').value;
 
-            // إظهار جميع الصفحات الثلاث مؤقتاً في الخلفية لكي تتمكن مكتبة html2canvas من التقاطها وقراءتها
             p1.style.display = 'block'; p2.style.display = 'block'; p3.style.display = 'block';
-            // إعدادات التقاط الصور (دقة عالية Scale 4، دعم روابط الصور الخارجية، تفعيل الخلفية البيضاء)
             const opts = { scale: 4, useCORS: true, logging: false, backgroundColor: '#ffffff' };
 
             try {
-                // 1. تصوير الصفحة الأولى وإضافتها كصفحة أولى بالـ PDF
                 const c1 = await html2canvas(p1, opts); pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-                
-                // 2. إنشاء صفحة جديدة بالـ PDF، تصوير الصفحة الثانية وإضافتها
                 pdf.addPage([116, 166], 'portrait');
                 const c2 = await html2canvas(p2, opts); pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-                
-                // 3. إنشاء صفحة جديدة بالـ PDF، تصوير الصفحة الثالثة وإضافتها ليكون الملف مكتملاً
                 pdf.addPage([116, 166], 'portrait');
                 const c3 = await html2canvas(p3, opts); pdf.addImage(c3.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-                
-                // حفظ وتنزيل ملف الـ PDF النهائي باسم مخصص ورسمي للعميل
                 pdf.save('Balady_Final_Form_' + filename + '.pdf');
 
-                // إعادة تفعيل الإخفاء والظهور الافتراضي للصفحات حسب حالة المتصفح الحالية بعد الانتهاء من التصدير للـ PDF
                 if (window.location.href.includes('view=page3')) {
                     p1.style.display = 'none'; p2.style.display = 'none';
                 } else {
                     p3.style.display = 'none';
                 }
-            } catch (err) { 
-                // إظهار تنبيه للمستخدم في حال حدوث أي خطأ غير متوقع أثناء معالجة المستند
-                alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.'); 
-            }
+            } catch (err) { alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.'); }
         }
     </script>
 </body>
