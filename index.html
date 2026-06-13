@@ -603,29 +603,49 @@
             const p1 = document.getElementById('page1');
             const p2 = document.getElementById('page2');
             const p3 = document.getElementById('page3');
-            const filename = document.getElementById('cNo').value;
+            const filename = document.getElementById('cNo').value || 'Certificate';
 
+            // حفظ الحالة الحالية للعرض قبل عملية الالتقاط
+            const isLiveView = window.location.href.includes('view=page3');
+
+            // إجبار كل الصفحات على الظهور المؤقت لالتقاط الـ Canvas بشكل صحيح ومكتمل
             p1.style.display = 'block';
             p2.style.display = 'block';
             p3.style.display = 'block';
 
-            const opts = { scale: 4, useCORS: true, logging: false, backgroundColor: '#ffffff' };
+            // إعدادات الـ html2canvas المحسنة لضمان ثبات جودة النصوص والصور والـ CORS
+            const opts = { 
+                scale: 3, 
+                useCORS: true, 
+                logging: false, 
+                backgroundColor: '#ffffff',
+                letterRendering: true
+            };
 
             try {
+                // التقاط وإدراج الصفحة الأولى
                 const c1 = await html2canvas(p1, opts);
                 pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
 
+                // إضافة الصفحة الثانية والتقاطها
                 pdf.addPage([116, 166], 'portrait');
                 const c2 = await html2canvas(p2, opts);
                 pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
 
+                // إضافة الصفحة الثالثة والتقاطها
                 pdf.addPage([116, 166], 'portrait');
                 const c3 = await html2canvas(p3, opts);
                 pdf.addImage(c3.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
 
+                // حفظ ملف الـ PDF النهائي المجمع
                 pdf.save('Balady_Final_Form_' + filename + '.pdf');
 
-                if (window.location.href.includes('view=page3')) {
+            } catch (err) {
+                console.error(err);
+                alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.');
+            } finally {
+                // إعادة استعادة حالة واجهة المعاينة الصحيحة للمستخدم حسب طريقة الدخول
+                if (isLiveView) {
                     p1.style.display = 'none';
                     p2.style.display = 'none';
                     p3.style.display = 'block';
@@ -634,8 +654,6 @@
                     p2.style.display = 'block';
                     p3.style.display = 'none';
                 }
-            } catch (err) {
-                alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.');
             }
         }
     </script>
