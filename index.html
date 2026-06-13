@@ -10,8 +10,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght=400;600;700;800&display=swap');
-         
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+        
         :root {
             --balady-green: #0a8243;
             --text-dark: #000000;
@@ -19,216 +19,59 @@
             --line-color: #cccccc;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Cairo', sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: #f5f7fa; padding: 20px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
 
-        body {
-            background-color: #f5f7fa;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .form-container {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            width: 100%;
-            max-width: 650px;
-            margin-bottom: 20px;
-        }
-
-        .form-container h2 {
-            color: var(--balady-green);
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 700;
-            border-bottom: 2px solid var(--balady-green);
-            padding-bottom: 10px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        @media (max-width: 600px) {
-            .form-grid { grid-template-columns: 1fr; }
-        }
-
+        .form-container { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 650px; margin-bottom: 20px; }
+        .form-container h2 { color: var(--balady-green); margin-bottom: 20px; text-align: center; font-weight: 700; border-bottom: 2px solid var(--balady-green); padding-bottom: 10px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
         .form-group { margin-bottom: 10px; }
         .form-group.full-width { grid-column: span 2; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #cccccc; border-radius: 6px; font-size: 14px; outline: none; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #cccccc; border-radius: 6px; font-size: 14px; }
+        .btn-submit { background-color: var(--balady-green); color: white; border: none; padding: 14px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; margin-top: 15px; }
 
-        .btn-submit {
-            background-color: var(--balady-green);
-            color: white;
-            border: none;
-            padding: 14px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-            font-weight: bold;
-            margin-top: 15px;
-        }
+        .preview-wrapper { display: none; width: 440px; }
+        .card-page { background: #ffffff; width: 440px; height: 630px; padding: 25px 35px; border: 1px solid #dcdcdc; margin-bottom: 20px; overflow: hidden; position: relative; }
+        
+        /* إخفاء الصفحة الثالثة في الواجهة العادية */
+        #page3 { display: none; }
 
-        .preview-wrapper {
-            display: none;
-            width: 440px;
-        }
-
-        .card-page {
-            background: #ffffff;
-            width: 440px;
-            height: 630px;
-            padding: 25px 35px;
-            position: relative;
-            box-sizing: border-box;
-            border: 1px solid #dcdcdc;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .header-image-container {
-            width: 100%;
-            height: 70px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #fafafa;
-            border-radius: 4px;
-        }
-
-        .header-uploaded-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .images-section {
-            display: flex;
-            justify-content: flex-start; 
-            padding-right: 35px; 
-            margin-bottom: 10px;
-            gap: 10px;
-        }
-
-        .qr-photo, .user-photo {
-            width: 115px;
-            height: 115px;
-            background-color: #f0f0f0;
-        }
-
+        .header-image-container { width: 100%; height: 70px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
+        .header-uploaded-img { width: 120%; height: 150%; object-fit: contain; }
+        .images-section { display: flex; justify-content: flex-start; padding-right: 35px; margin-bottom: 10px; gap: 10px; }
+        .qr-photo, .user-photo { width: 115px; height: 115px; }
         .user-photo { object-fit: fill; }
         .qr-photo img { width: 100%; height: 100%; object-fit: contain; }
-
-        .title-badge {
-            text-align: center;
-            color: var(--balady-green);
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .info-table {
-            width: 100%;
-            border-collapse: collapse;
-            border: 2px solid #666666;
-            font-size: 12px;
-        }
-        
+        .title-badge { text-align: center; color: var(--balady-green); font-size: 26px; font-weight: 700; margin-bottom: 10px; }
+        .info-table { width: 100%; border-collapse: collapse; border: 2px solid #666666; font-size: 12px; }
         .info-table td { padding: 8px 5px; vertical-align: middle; }
-        .info-table tr.section-divider { border-bottom: 3px solid #666666; background-color: #f9f9f9; }
+        .section-divider { border-bottom: 3px solid #666666; background-color: #f9f9f9; }
         .label-cell { font-weight: 800; text-align: right; width: 35%; }
         .colon-cell { text-align: center; width: 5%; font-weight: 800; }
         .value-cell { text-align: right; width: 60%; font-weight: 700; }
 
-        .back-page {
-            display: flex;
-            flex-direction: column;
-            padding: 50px 30px;
-            justify-content: center;
-        }
-
+        .back-page { display: flex; flex-direction: column; padding: 50px 30px; justify-content: center; }
         .terms-list { list-style: none; text-align: justify; }
         .terms-list li { margin-bottom: 25px; position: relative; padding-right: 25px; }
-        .terms-list li h2 { font-size: 19px; font-weight: 800; display: inline; line-height: 1.5; color: #000000; }
-        .terms-list li::before { content: "*"; position: absolute; right: 0; top: 2px; font-weight: bold; font-size: 24px; color: #000000; }
+        .terms-list li h2 { font-size: 19px; font-weight: 800; display: inline; line-height: 1.5; }
+        .terms-list li::before { content: "*"; position: absolute; right: 0; top: 2px; font-weight: bold; font-size: 24px; }
 
-        /* --- الصفحة الثالثة (بلدي) --- */
-        .third-page-balady {
-            background-color: #fafbfc;
-            padding: 10px 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border: 3px solid var(--balady-green); 
-        }
-            
-        .balady-avatar-center-wrapper {
-            width: 80%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 5px;
-            margin-top: -10px;
-        }
-
-        .balady-avatar-center {
-            width: 65px;
-            height: 75px;
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            background-color: #eee;
-        }
-
+        .third-page-balady { background-color: #fafbfc; padding: 10px 15px; display: flex; flex-direction: column; align-items: center; border: 3px solid var(--balady-green); }
+        .balady-avatar-center-wrapper { width: 80%; display: flex; justify-content: center; margin-bottom: 5px; }
+        .balady-avatar-center { width: 65px; height: 75px; border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .balady-avatar-center img { width: 100%; height: 100%; object-fit: fill; }
-        .balady-green-title { color: var(--balady-green); font-size: 20px; font-weight: 700; margin-bottom: 8px; text-align: center; }
-
-        .balady-main-card {
-            background: #ffffff;
-            border-radius: 6px;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
-            border: 1px solid #ededed;
-            width: 100%;
-            padding: 10px 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .balady-group-label { color: var(--balady-green); font-size: 11px; font-weight: 700; text-align: right; margin-top: 1px; }
-        .balady-row { display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: 12px; }
-        .balady-item-name { color: var(--text-dark); font-weight: 700; text-align: right; width: 40%; }
-        .balady-item-value { color: var(--text-dark); font-weight: 600; text-align: right; width: 60%; }
+        .balady-green-title { color: var(--balady-green); font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .balady-main-card { background: #ffffff; border-radius: 6px; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04); border: 1px solid #ededed; width: 100%; padding: 10px 15px; }
+        .balady-group-label { color: var(--balady-green); font-size: 11px; font-weight: 700; text-align: right; }
+        .balady-row { display: flex; justify-content: space-between; font-size: 12px; }
+        .balady-item-name { color: var(--text-dark); font-weight: 700; width: 40%; }
+        .balady-item-value { color: var(--text-dark); font-weight: 600; width: 60%; }
         .balady-separator { width: 100%; height: 2px; background-color: var(--line-color); margin: 3px 0; }
 
         .control-panel { display: none; width: 440px; margin-top: 10px; }
-        .btn-pdf { background-color: #d32f2f; color: white; border: none; padding: 15px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-
-        /* الأزرار الاحتياطية للصور عند الفتح من الجوال */
-        .live-photo-uploader {
-            background: white;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border: 1px dashed var(--balady-green);
-            font-size: 12px;
-            width: 100%;
-        }
-        .live-photo-uploader input { margin-top: 5px; width: 100%; }
+        .btn-pdf { background-color: #d32f2f; color: white; border: none; padding: 15px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -239,50 +82,28 @@
             <div class="form-grid">
                 <div class="form-group"><label>صورة الشعار (الهيدر):</label><input type="file" id="inHeaderImg" accept="image/*" required></div>
                 <div class="form-group"><label>الصورة الشخصية للعامِل:</label><input type="file" id="inUserImg" accept="image/*" required></div>
-                
                 <div class="form-group"><label>رقم الشهادة:</label><input type="text" id="cNo" placeholder="26069-1447" required></div>
                 <div class="form-group"><label>مكان الإصدار:</label><input type="text" id="cPlace" placeholder="أمانة مدينة الرياض" required></div>
-                
                 <div class="form-group"><label>تاريخ الإصدار:</label><input type="text" id="cIssueDate" placeholder="1447/12/21" required></div>
                 <div class="form-group"><label>نهاية الصلاحية:</label><input type="text" id="cExpiryDate" placeholder="1448/12/21" required></div>
-                
                 <div class="form-group full-width"><label>الاسم الكامل للعامِل:</label><input type="text" id="cName" placeholder="MD IQBAL HOSSAIN" required></div>
-                
                 <div class="form-group"><label>رقم الهوية / الإقامة:</label><input type="text" id="cIdNo" placeholder="2500113531" required></div>
                 <div class="form-group"><label>الجنس:</label><input type="text" id="cGender" placeholder="ذكر" required></div>
-                
                 <div class="form-group"><label>الجنسية:</label><input type="text" id="cNat" placeholder="بنغلاديش" required></div>
                 <div class="form-group"><label>المهنة:</label><input type="text" id="cJob" placeholder="عامل مطبخ" required></div>
-                
                 <div class="form-group"><label>البرنامج التثقيفي:</label><input type="text" id="cProg" placeholder="منشآت الغذاء" required></div>
                 <div class="form-group"><label>تاريخ انتهاء البرنامج:</label><input type="text" id="cProgExp" placeholder="1450/12/28" required></div>
-                
                 <div class="form-group full-width"><label>اسم المنشأة:</label><input type="text" id="cFacName" placeholder="شركة عيادات صفا مكة" required></div>
                 <div class="form-group full-width"><label>رقم رخصة المنشأة:</label><input type="text" id="cFacLic" placeholder="43058039930" required></div>
             </div>
-            <button type="submit" class="btn-submit">توليد ومعاينة الـ 3 صفحات</button>
+            <button type="submit" class="btn-submit">توليد ومعاينة الشهادة</button>
         </form>
     </div>
 
-    <div id="liveUploaderContainer" style="display:none; width: 440px;">
-        <div class="live-photo-uploader">
-            <label>اضغط هنا لإضافة الشعار (الهيدر) إذا لم يظهر:</label>
-            <input type="file" accept="image/*" onchange="loadImgLive(this, 'outHeaderImg3')">
-        </div>
-        <div class="live-photo-uploader">
-            <label>اضغط هنا لإضافة صورة العامل الشخصية إذا لم تظهر:</label>
-            <input type="file" accept="image/*" onchange="loadImgLive(this, 'outUserImg3')">
-        </div>
-    </div>
-
     <div class="preview-wrapper" id="previewWrapper">
-        
         <div class="card-page" id="page1">
             <div class="header-image-container"><img id="outHeaderImg1" class="header-uploaded-img" src=""></div>
-            <div class="images-section">
-                <div id="outQrImg" class="qr-photo"></div>
-                <img id="outUserImg1" class="user-photo" src="">
-            </div>
+            <div class="images-section"><div id="outQrImg" class="qr-photo"></div><img id="outUserImg1" class="user-photo"></div>
             <div class="title-badge">شهادة صحية</div>
             <table class="info-table">
                 <tr><td class="label-cell">رقم الشهادة</td><td class="colon-cell">:</td><td class="value-cell" id="lCertNo"></td></tr>
@@ -308,9 +129,7 @@
 
         <div class="card-page third-page-balady" id="page3">
             <div class="header-image-container"><img id="outHeaderImg3" class="header-uploaded-img" src=""></div>
-            <div class="balady-avatar-center-wrapper">
-                <div class="balady-avatar-center"><img id="outUserImg3" src=""></div>
-            </div>
+            <div class="balady-avatar-center-wrapper"><div class="balady-avatar-center"><img id="outUserImg3" src=""></div></div>
             <div class="balady-green-title">شهادة صحية</div>
             <div class="balady-main-card">
                 <div class="balady-group-label">بيانات الشهادة:</div>
@@ -339,50 +158,22 @@
     </div>
 
     <script>
-        // دالة الفحص الفوري للرابط بمجرد فتح الصفحة عبر الـ QR الكود
+        // التعامل مع رابط الـ QR عند فتحه
         window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            
-            if (urlParams.get('view') === 'page3') {
-                // عرض الصفحة الثالثة فقط وإخفاء كل شيء آخر بشكل مطلق
+            if (window.location.href.includes('view=page3')) {
                 document.getElementById('inputFormContainer').style.display = 'none';
                 document.getElementById('previewWrapper').style.display = 'block';
                 document.getElementById('page1').style.display = 'none';
                 document.getElementById('page2').style.display = 'none';
                 document.getElementById('page3').style.display = 'block';
-                document.getElementById('liveUploaderContainer').style.display = 'block'; // أزرار الصور الآمنة للرابط
-
-                // تعبئة البيانات النصية فوراً وبدون أي توقف
-                document.getElementById('vCertNo').innerText = urlParams.get('cNo') || '';
-                document.getElementById('vIssueDate').innerText = urlParams.get('cIssueDate') || '';
-                document.getElementById('vExpiryDate').innerText = urlParams.get('cExpiryDate') || '';
-                document.getElementById('vName').innerText = urlParams.get('cName') || '';
-                document.getElementById('vIdNo').innerText = urlParams.get('cIdNo') || '';
-                document.getElementById('vGender').innerText = urlParams.get('cGender') || '';
-                document.getElementById('vNat').innerText = urlParams.get('cNat') || '';
-                document.getElementById('vJob').innerText = urlParams.get('cJob') || '';
-                document.getElementById('vProg').innerText = urlParams.get('cProg') || '';
-                document.getElementById('vProgExp').innerText = urlParams.get('cProgExp') || '';
-                document.getElementById('vFacName').innerText = urlParams.get('cFacName') || '';
-                document.getElementById('vFacLic').innerText = urlParams.get('cFacLic') || '';
             }
         });
 
-        function loadImgLive(input, targetId) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById(targetId).src = e.target.result;
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
         function processForm(event) {
             event.preventDefault();
-            
-            // تعبئة بيانات المعاينة للـ PDF
             const certNo = document.getElementById('cNo').value;
+
+            // تحديث الحقول
             document.getElementById('lCertNo').innerText = certNo;
             document.getElementById('lCertPlace').innerText = document.getElementById('cPlace').value;
             document.getElementById('lExpiryDate').innerText = document.getElementById('cExpiryDate').value;
@@ -391,78 +182,77 @@
             document.getElementById('lGender').innerText = document.getElementById('cGender').value;
             document.getElementById('lNat').innerText = document.getElementById('cNat').value;
             document.getElementById('lJob').innerText = document.getElementById('cJob').value;
-
-            // تجهيز متغيرات الرابط المشفرة لنقل البيانات عبر الكود بشكل مباشر وآمن
-            const cNo = encodeURIComponent(certNo);
-            const cIssueDate = encodeURIComponent(document.getElementById('cIssueDate').value);
-            const cExpiryDate = encodeURIComponent(document.getElementById('cExpiryDate').value);
-            const cName = encodeURIComponent(document.getElementById('cName').value);
-            const cIdNo = encodeURIComponent(document.getElementById('cIdNo').value);
-            const cGender = encodeURIComponent(document.getElementById('cGender').value);
-            const cNat = encodeURIComponent(document.getElementById('cNat').value);
-            const cJob = encodeURIComponent(document.getElementById('cJob').value);
-            const cProg = encodeURIComponent(document.getElementById('cProg').value);
-            const cProgExp = encodeURIComponent(document.getElementById('cProgExp').value);
-            const cFacName = encodeURIComponent(document.getElementById('cFacName').value);
-            const cFacLic = encodeURIComponent(document.getElementById('cFacLic').value);
+        
+            document.getElementById('vCertNo').innerText = certNo;
+            document.getElementById('vIssueDate').innerText = document.getElementById('cIssueDate').value;
+            document.getElementById('vExpiryDate').innerText = document.getElementById('cExpiryDate').value;
+            document.getElementById('vName').innerText = document.getElementById('cName').value;
+            document.getElementById('vIdNo').innerText = document.getElementById('cIdNo').value;
+            document.getElementById('vGender').innerText = document.getElementById('cGender').value;
+            document.getElementById('vNat').innerText = document.getElementById('cNat').value;
+            document.getElementById('vJob').innerText = document.getElementById('cJob').value;
+            document.getElementById('vProg').innerText = document.getElementById('cProg').value;
+            document.getElementById('vProgExp').innerText = document.getElementById('cProgExp').value;
+            document.getElementById('vFacName').innerText = document.getElementById('cFacName').value;
+            document.getElementById('vFacLic').innerText = document.getElementById('cFacLic').value;
 
             document.getElementById("outQrImg").innerHTML = "";
+            const liveTrackingUrl = window.location.origin + window.location.pathname + "?view=page3";
+            new QRCode(document.getElementById("outQrImg"), { text: liveTrackingUrl, width: 115, height: 115, correctLevel: QRCode.CorrectLevel.H });
 
-            // تكوين رابط التتبع المباشر ليعرض الصفحة الثالثة وبياناتها عند الفتح
-            const liveTrackingUrl = window.location.origin + window.location.pathname + 
-                `?view=page3&cNo=${cNo}&cIssueDate=${cIssueDate}&cExpiryDate=${cExpiryDate}&cName=${cName}&cIdNo=${cIdNo}&cGender=${cGender}&cNat=${cNat}&cJob=${cJob}&cProg=${cProg}&cProgExp=${cProgExp}&cFacName=${cFacName}&cFacLic=${cFacLic}`;
-            
-            new QRCode(document.getElementById("outQrImg"), {
-                text: liveTrackingUrl,
-                width: 115,
-                height: 115,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.L
+            const mapping = [
+                { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3' },
+                { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3' }
+            ];
+
+            let loadedCount = 0;
+            mapping.forEach(item => {
+                const file = document.getElementById(item.input).files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        if(item.view1) document.getElementById(item.view1).src = e.target.result;
+                        if(item.view3) document.getElementById(item.view3).src = e.target.result;
+                        loadedCount++;
+                        if(loadedCount === 2) {
+                            document.getElementById('inputFormContainer').style.display = 'none';
+                            document.getElementById('previewWrapper').style.display = 'block';
+                            document.getElementById('page1').style.display = 'block';
+                            document.getElementById('page2').style.display = 'block';
+                            document.getElementById('page3').style.display = 'none'; // الصفحة 3 مخفية
+                            document.getElementById('controlPanel').style.display = 'block';
+                        }
+                    }
+                    reader.readAsDataURL(file);
+                }
             });
-
-            // قراءة وعرض الصور في وضع المعاينة الرئيسي للـ PDF
-            const headerFile = document.getElementById('inHeaderImg').files[0];
-            const userFile = document.getElementById('inUserImg').files[0];
-
-            if (headerFile) {
-                const r1 = new FileReader(); r1.onload = (e) => { document.getElementById('outHeaderImg1').src = e.target.result; }; r1.readAsDataURL(headerFile);
-            }
-            if (userFile) {
-                const r2 = new FileReader(); r2.onload = (e) => { document.getElementById('outUserImg1').src = e.target.result; }; r2.readAsDataURL(userFile);
-            }
-
-            // إظهار صفحات المعاينة والتحكم بالـ PDF وإخفاء النموذج الأول
-            document.getElementById('inputFormContainer').style.display = 'none';
-            document.getElementById('previewWrapper').style.display = 'block';
-            document.getElementById('page1').style.display = 'block';
-            document.getElementById('page2').style.display = 'block';
-            document.getElementById('page3').style.display = 'none'; 
-            document.getElementById('controlPanel').style.display = 'block';
         }
 
         async function buildAbsolutePDF() {
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [116, 166] });
+            const p1 = document.getElementById('page1'), p2 = document.getElementById('page2'), p3 = document.getElementById('page3');
+            const filename = document.getElementById('cNo').value;
 
-            const p1 = document.getElementById('page1');
-            const p2 = document.getElementById('page2');
-            const filename = document.getElementById('cNo').value || 'Certificate';
-
-            const opts = { scale: 3, useCORS: true, logging: false, backgroundColor: '#ffffff' };
+            // إظهار الصفحات للطباعة
+            p1.style.display = 'block'; p2.style.display = 'block'; p3.style.display = 'block';
+            const opts = { scale: 4, useCORS: true, logging: false, backgroundColor: '#ffffff' };
 
             try {
-                const c1 = await html2canvas(p1, opts);
-                pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-
+                const c1 = await html2canvas(p1, opts); pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
                 pdf.addPage([116, 166], 'portrait');
-                const c2 = await html2canvas(p2, opts);
-                pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
+                const c2 = await html2canvas(p2, opts); pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
+                pdf.addPage([116, 166], 'portrait');
+                const c3 = await html2canvas(p3, opts); pdf.addImage(c3.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
+                pdf.save('Balady_Final_Form_' + filename + '.pdf');
 
-                pdf.save('Certificate_Form_' + filename + '.pdf');
-            } catch (err) {
-                alert('حدث خطأ أثناء حفظ المستند، يرجى المحاولة مجدداً.');
-            }
+                // إعادة الإخفاء بعد التوليد
+                if (window.location.href.includes('view=page3')) {
+                    p1.style.display = 'none'; p2.style.display = 'none';
+                } else {
+                    p3.style.display = 'none';
+                }
+            } catch (err) { alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.'); }
         }
     </script>
 </body>
