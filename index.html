@@ -35,7 +35,6 @@
         .preview-wrapper { display: none; width: 440px; }
         .card-page { background: #ffffff; width: 440px; height: 630px; padding: 25px 35px; border: 1px solid #dcdcdc; margin-bottom: 20px; overflow: hidden; position: relative; }
         
-        /* إخفاء الصفحة الثالثة في الواجهة العادية */
         #page3 { display: none; }
 
         .header-image-container { width: 100%; height: 70px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
@@ -80,8 +79,9 @@
         <h2>نظام طباعة الشهادات المدرسية المطور</h2>
         <form id="certForm" onsubmit="processForm(event)">
             <div class="form-grid">
-                <div class="form-group"><label>صورة الشعار (الهيدر):</label><input type="file" id="inHeaderImg" accept="image/*" required></div>
-                <div class="form-group"><label>الصورة الشخصية لطالب :</label><input type="file" id="inUserImg" accept="image/*" required></div>
+                <div class="form-group full-width"><label>رابط صورة الشعار (الهيدر):</label><input type="url" id="inHeaderImg" placeholder="https://example.com/header.png" required></div>
+                <div class="form-group full-width"><label>رابط الصورة الشخصية للطالب:</label><input type="url" id="inUserImg" placeholder="https://example.com/student.png" required></div>
+                
                 <div class="form-group"><label>رقم الشهادة:</label><input type="text" id="cNo" placeholder="26069-1447" required></div>
                 <div class="form-group"><label>مكان الإصدار:</label><input type="text" id="cPlace" placeholder=" " required></div>
                 <div class="form-group"><label>تاريخ الإصدار:</label><input type="text" id="cIssueDate" placeholder="1447/12/21" required></div>
@@ -156,13 +156,11 @@
     </div>
 
     <script>
-        // دالة لاستخراج متغيرات الرابط (URL Parameters)
         function getUrlParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param) || "";
         }
 
-        // التعامل مع رابط الـ QR عند فتحه وفك التشفير وعرض البيانات
         window.addEventListener('DOMContentLoaded', () => {
             if (getUrlParam('view') === 'page3') {
                 document.getElementById('inputFormContainer').style.display = 'none';
@@ -171,7 +169,6 @@
                 document.getElementById('page2').style.display = 'none';
                 document.getElementById('page3').style.display = 'block';
 
-                // تعبئة البيانات الآتية من الباركود في الصفحة 3 مباشرة
                 document.getElementById('vCertNo').innerText = getUrlParam('cNo');
                 document.getElementById('vIssueDate').innerText = getUrlParam('cIssueDate');
                 document.getElementById('vExpiryDate').innerText = getUrlParam('cExpiryDate');
@@ -185,7 +182,7 @@
                 document.getElementById('vFacName').innerText = getUrlParam('cFacName');
                 document.getElementById('vFacLic').innerText = getUrlParam('cFacLic');
 
-                // استرجاع الصور المخزنة مؤقتاً في الرابط إن وجدت
+                // هنا نقرأ روابط الصور القادمة من الباركود مباشرة
                 if(getUrlParam('hImg')) document.getElementById('outHeaderImg3').src = getUrlParam('hImg');
                 if(getUrlParam('uImg')) document.getElementById('outUserImg3').src = getUrlParam('uImg');
             }
@@ -207,8 +204,17 @@
             const cProgExp = document.getElementById('cProgExp').value;
             const cFacName = document.getElementById('cFacName').value;
             const cFacLic = document.getElementById('cFacLic').value;
+            
+            // قراءة الروابط النصية للصور
+            const hImgUrl = document.getElementById('inHeaderImg').value;
+            const uImgUrl = document.getElementById('inUserImg').value;
 
-            // تحديث واجهة العرض المحلية (Preview)
+            // تحديث الصور في المعاينة الفورية المحلية
+            document.getElementById('outHeaderImg1').src = hImgUrl;
+            document.getElementById('outHeaderImg3').src = hImgUrl;
+            document.getElementById('outUserImg1').src = uImgUrl;
+            document.getElementById('outUserImg3').src = uImgUrl;
+
             document.getElementById('lCertNo').innerText = cNo;
             document.getElementById('lCertPlace').innerText = cPlace;
             document.getElementById('lExpiryDate').innerText = cExpiryDate;
@@ -231,71 +237,43 @@
             document.getElementById('vFacName').innerText = cFacName;
             document.getElementById('vFacLic').innerText = cFacLic;
 
-            // تجهيز وقراءة الصور أولاً
-            const mapping = [
-                { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3' },
-                { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3' }
-            ];
-
-            let loadedCount = 0;
-            let headerBase64 = "";
-            let userBase64 = "";
-
-            mapping.forEach(item => {
-                const file = document.getElementById(item.input).files[0];
-                if(file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        if(item.view1) document.getElementById(item.view1).src = e.target.result;
-                        if(item.view3) document.getElementById(item.view3).src = e.target.result;
-                        
-                        if(item.input === 'inHeaderImg') headerBase64 = e.target.result;
-                        if(item.input === 'inUserImg') userBase64 = e.target.result;
-
-                        loadedCount++;
-                        if(loadedCount === 2) {
-                            // تم تحميل كافة الصور، الآن ننشئ الرابط الشامل للبيانات والباركود
-                            document.getElementById("outQrImg").innerHTML = "";
-                            
-                            // تشفير القيم لضمان سلامتها داخل الرابط وحل مشكلة المسافات واللغة العربية
-                            const params = new URLSearchParams({
-                                view: 'page3',
-                                cNo: cNo,
-                                cPlace: cPlace,
-                                cExpiryDate: cExpiryDate,
-                                cName: cName,
-                                cIdNo: cIdNo,
-                                cGender: cGender,
-                                cNat: cNat,
-                                cJob: cJob,
-                                cIssueDate: cIssueDate,
-                                cProg: cProg,
-                                cProgExp: cProgExp,
-                                cFacName: cFacName,
-                                cFacLic: cFacLic
-                            });
-
-                            // ملاحظة: روابط الباركود لها حد أقصى للحروف، يفضل رفع الصور على سيرفر إذا كانت أحجامها ضخمة، ولكن لتعمل محلياً سنمرر الرابط الشامل
-                            const liveTrackingUrl = window.location.origin + window.location.pathname + "?" + params.toString();
-                            
-                            new QRCode(document.getElementById("outQrImg"), { 
-                                text: liveTrackingUrl, 
-                                width: 115, 
-                                height: 115, 
-                                correctLevel: QRCode.CorrectLevel.L // تم تقليل مستوى الأخطاء ليتسع الرابط الطويل بكفاءة
-                            });
-
-                            document.getElementById('inputFormContainer').style.display = 'none';
-                            document.getElementById('previewWrapper').style.display = 'block';
-                            document.getElementById('page1').style.display = 'block';
-                            document.getElementById('page2').style.display = 'block';
-                            document.getElementById('page3').style.display = 'none'; 
-                            document.getElementById('controlPanel').style.display = 'block';
-                        }
-                    }
-                    reader.readAsDataURL(file);
-                }
+            document.getElementById("outQrImg").innerHTML = "";
+            
+            // تمرير روابط الصور والبيانات كلها داخل الباركود بأمان
+            const params = new URLSearchParams({
+                view: 'page3',
+                cNo: cNo,
+                cPlace: cPlace,
+                cExpiryDate: cExpiryDate,
+                cName: cName,
+                cIdNo: cIdNo,
+                cGender: cGender,
+                cNat: cNat,
+                cJob: cJob,
+                cIssueDate: cIssueDate,
+                cProg: cProg,
+                cProgExp: cProgExp,
+                cFacName: cFacName,
+                cFacLic: cFacLic,
+                hImg: hImgUrl, // تمرير رابط الشعار
+                uImg: uImgUrl  // تمرير رابط الطالب
             });
+
+            const liveTrackingUrl = window.location.origin + window.location.pathname + "?" + params.toString();
+            
+            new QRCode(document.getElementById("outQrImg"), { 
+                text: liveTrackingUrl, 
+                width: 115, 
+                height: 115, 
+                correctLevel: QRCode.CorrectLevel.L
+            });
+
+            document.getElementById('inputFormContainer').style.display = 'none';
+            document.getElementById('previewWrapper').style.display = 'block';
+            document.getElementById('page1').style.display = 'block';
+            document.getElementById('page2').style.display = 'block';
+            document.getElementById('page3').style.display = 'none'; 
+            document.getElementById('controlPanel').style.display = 'block';
         }
 
         async function buildAbsolutePDF() {
