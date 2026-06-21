@@ -44,7 +44,6 @@
         .qr-photo, .user-photo { width: 115px; height: 115px; }
         .user-photo { object-fit: fill; }
         
-        /* تحسين إطار الباركود ليكون ناصع البياض وبأعلى تباين ومساحة أمان حوله */
         .qr-photo { background: #ffffff; padding: 8px; border: 1px solid #dddddd; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 4px rgba(0,0,0,0.05); }
         .qr-photo img { width: 100% !important; height: 100% !important; object-fit: contain; display: block; }
         
@@ -129,6 +128,31 @@
                 <li><h2>للتأكد من سلامة الشهادة يرجى زيارة موقع أمانة منطقة الرياض</h2></li>
             </ul>
         </div>
+
+        <div class="card-page third-page-balady" id="page3">
+            <div class="header-image-container"><img id="outHeaderImg3" class="header-uploaded-img" src=""></div>
+            <div class="balady-avatar-center-wrapper"><div class="balady-avatar-center"><img id="outUserImg3" src=""></div></div>
+            <div class="title-badge">شهادة صحية </div>
+            <div class="balady-main-card">
+                <div class="balady-group-label">بيانات الشهادة :</div>
+                <div class="balady-row"><span class="balady-item-name">رقم الشهادة</span><span class="balady-item-value" id="vCertNo"></span></div>
+                <div class="balady-row"><span class="balady-item-name">تاريخ الإصدار</span><span class="balady-item-value" id="vIssueDate"></span></div>
+                <div class="balady-row"><span class="balady-item-name">نهاية الصلاحية</span><span class="balady-item-value" id="vExpiryDate"></span></div>
+                <div class="balady-separator"></div>
+                <div class="balady-group-label">بيانات صاحب الشهادة :</div>
+                <div class="balady-row"><span class="balady-item-name">الاسم</span><span class="balady-item-value" id="vName"></span></div>
+                <div class="balady-row"><span class="balady-item-name">رقم الهوية </span><span class="balady-item-value" id="vIdNo"></span></div>
+                <div class="balady-row"><span class="balady-item-name">الجنس</span><span class="balady-item-value" id="vGender"></span></div>
+                <div class="balady-row"><span class="balady-item-name">الجنسية</span><span class="balady-item-value" id="vNat"></span></div>
+                <div class="balady-row"><span class="balady-item-name">المهنة</span><span class="balady-item-value" id="vJob"></span></div>
+                <div class="balady-row"><span class="balady-item-name">البرنامج التثقيفي </span><span class="balady-item-value" id="vProg"></span></div>
+                <div class="balady-row"><span class="balady-item-name">تاريخ انتهاء البرنامج</span><span class="balady-item-value" id="vProgExp"></span></div>
+                <div class="balady-separator"></div>
+                <div class="balady-group-label">بيانات المنشاة :</div>
+                <div class="balady-row"><span class="balady-item-name">اسم المنشاة </span><span class="balady-item-value" id="vFacName"></span></div>
+                <div class="balady-row"><span class="balady-item-name">رقم رخصة المنشاة </span><span class="balady-item-value" id="vFacLic"></span></div>
+            </div>
+        </div>
     </div>
 
     <div class="control-panel" id="controlPanel">
@@ -136,6 +160,45 @@
     </div>
 
     <script>
+        // دالة لفحص الرابط عند مسح الباركود
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const certNoParam = urlParams.get('showCert');
+            
+            if (certNoParam) {
+                // جلب البيانات المخزنة برقم الشهادة هذا
+                const savedData = localStorage.getItem('cert_' + certNoParam);
+                
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    
+                    // إخفاء كل شيء وإظهار الصفحة الثالثة فقط
+                    document.getElementById('inputFormContainer').style.display = 'none';
+                    document.getElementById('previewWrapper').style.display = 'block';
+                    document.getElementById('page1').style.display = 'none';
+                    document.getElementById('page2').style.display = 'none';
+                    document.getElementById('page3').style.display = 'block';
+
+                    // حقن البيانات في الصفحة الثالثة
+                    document.getElementById('vCertNo').innerText = data.cNo;
+                    document.getElementById('vIssueDate').innerText = data.cIssueDate;
+                    document.getElementById('vExpiryDate').innerText = data.cExpiryDate;
+                    document.getElementById('vName').innerText = data.cName;
+                    document.getElementById('vIdNo').innerText = data.cIdNo;
+                    document.getElementById('vGender').innerText = data.cGender;
+                    document.getElementById('vNat').innerText = data.cNat;
+                    document.getElementById('vJob').innerText = data.cJob;
+                    document.getElementById('vProg').innerText = data.cProg;
+                    document.getElementById('vProgExp').innerText = data.cProgExp;
+                    document.getElementById('vFacName').innerText = data.cFacName;
+                    document.getElementById('vFacLic').innerText = data.cFacLic;
+                    
+                    if(data.hImg) document.getElementById('outHeaderImg3').src = data.hImg;
+                    if(data.uImg) document.getElementById('outUserImg3').src = data.uImg;
+                }
+            }
+        });
+
         function processForm(event) {
             event.preventDefault();
             
@@ -147,8 +210,13 @@
             const cGender = document.getElementById('cGender').value;
             const cNat = document.getElementById('cNat').value;
             const cJob = document.getElementById('cJob').value;
+            const cIssueDate = document.getElementById('cIssueDate').value;
+            const cProg = document.getElementById('cProg').value;
+            const cProgExp = document.getElementById('cProgExp').value;
+            const cFacName = document.getElementById('cFacName').value;
+            const cFacLic = document.getElementById('cFacLic').value;
 
-            // تعبئة البيانات في صفحة المعاينة الأولية
+            // تعبئة بيانات الصفحة الأولى والثالثة بالخلفية
             document.getElementById('lCertNo').innerText = cNo;
             document.getElementById('lCertPlace').innerText = cPlace;
             document.getElementById('lExpiryDate').innerText = cExpiryDate;
@@ -157,13 +225,27 @@
             document.getElementById('lGender').innerText = cGender;
             document.getElementById('lNat').innerText = cNat;
             document.getElementById('lJob').innerText = cJob;
+        
+            document.getElementById('vCertNo').innerText = cNo;
+            document.getElementById('vIssueDate').innerText = cIssueDate;
+            document.getElementById('vExpiryDate').innerText = cExpiryDate;
+            document.getElementById('vName').innerText = cName;
+            document.getElementById('vIdNo').innerText = cIdNo;
+            document.getElementById('vGender').innerText = cGender;
+            document.getElementById('vNat').innerText = cNat;
+            document.getElementById('vJob').innerText = cJob;
+            document.getElementById('vProg').innerText = cProg;
+            document.getElementById('vProgExp').innerText = cProgExp;
+            document.getElementById('vFacName').innerText = cFacName;
+            document.getElementById('vFacLic').innerText = cFacLic;
 
             const mapping = [
-                { input: 'inHeaderImg', view1: 'outHeaderImg1' },
-                { input: 'inUserImg', view1: 'outUserImg1' }
+                { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3' },
+                { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3' }
             ];
 
             let loadedCount = 0;
+            let hImgBase64 = "", uImgBase64 = "";
 
             mapping.forEach(item => {
                 const file = document.getElementById(item.input).files[0];
@@ -171,27 +253,38 @@
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         if(item.view1) document.getElementById(item.view1).src = e.target.result;
+                        if(item.view3) document.getElementById(item.view3).src = e.target.result;
+
+                        if(item.input === 'inHeaderImg') hImgBase64 = e.target.result;
+                        if(item.input === 'inUserImg') uImgBase64 = e.target.result;
 
                         loadedCount++;
                         if(loadedCount === 2) {
-                            // تنظيف الباركود القديم تماماً لضمان عدم حدوث أي خطأ رندر
                             document.getElementById("outQrImg").innerHTML = "";
                             
-                            // السر هنا: نضع رقم الشهادة فقط داخل الرابط ليكون النص قصيراً جداً ومربعات الباركود واسعة جداً وضخمة!
-                            const shortCleanUrl = window.location.origin + window.location.pathname + "?certNo=" + encodeURIComponent(cNo);
+                            // 1. تخزين البيانات والصور محلياً لتستدعيها الصفحة الثالثة مباشرة
+                            const fullData = {
+                                cNo, cPlace, cExpiryDate, cName, cIdNo, cGender, cNat, cJob, cIssueDate, cProg, cProgExp, cFacName, cFacLic,
+                                hImg: hImgBase64, uImg: uImgBase64
+                            };
+                            localStorage.setItem('cert_' + cNo, JSON.stringify(fullData));
+
+                            // 2. رابط الباركود المختصر والأنيق جداً (يوجه للصفحة الثالثة عبر المعرف)
+                            const finalTrackingUrl = window.location.origin + window.location.pathname + "?showCert=" + encodeURIComponent(cNo);
                             
-                            // توليد الباركود النظيف عالي التباين وقابل للمسح بأي حجم صغير
+                            // 3. بناء الباركود الخفيف والمتباعد
                             new QRCode(document.getElementById("outQrImg"), { 
-                                text: shortCleanUrl, 
+                                text: finalTrackingUrl, 
                                 width: 115, 
                                 height: 115, 
-                                correctLevel: QRCode.CorrectLevel.M // مستوى تباين متوسط ومربعات مفتوحة ومريحة للكاميرات
+                                correctLevel: QRCode.CorrectLevel.M
                             });
 
                             document.getElementById('inputFormContainer').style.display = 'none';
                             document.getElementById('previewWrapper').style.display = 'block';
                             document.getElementById('page1').style.display = 'block';
                             document.getElementById('page2').style.display = 'block';
+                            document.getElementById('page3').style.display = 'none'; 
                             document.getElementById('controlPanel').style.display = 'block';
                         }
                     }
@@ -206,31 +299,22 @@
             btn.disabled = true;
 
             const { jsPDF } = window.jspdf;
-            // إعدادات حجم البطاقة الثابتة [116mm × 166mm]
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [116, 166] });
             const p1 = document.getElementById('page1'), p2 = document.getElementById('page2');
             const filename = document.getElementById('cNo').value;
 
             p1.style.display = 'block'; p2.style.display = 'block';
-            
-            // انتظار لتأكيد رندرة عناصر الباركود والصور
             await new Promise(resolve => setTimeout(resolve, 300));
 
-            const opts = { 
-                scale: 4, // جودة فائقة الدقة والوضوح لمنع البكسلة عند تصغير الحجم للطباعة
-                useCORS: true, 
-                logging: false, 
-                backgroundColor: '#ffffff'
-            };
+            const opts = { scale: 4, useCORS: true, logging: false, backgroundColor: '#ffffff' };
 
             try {
                 const c1 = await html2canvas(p1, opts); pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
                 pdf.addPage([116, 166], 'portrait');
                 const c2 = await html2canvas(p2, opts); pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-                
                 pdf.save('Balady_Card_' + filename + '.pdf');
             } catch (err) { 
-                alert('حدث خطأ أثناء إعداد مستند الـ PDF، يرجى المحاولة مرة أخرى.'); 
+                alert('حدث خطأ أثناء إعداد الـ PDF.'); 
             } finally {
                 btn.innerText = "حفظ وتحميل الـ PDF النهائي";
                 btn.disabled = false;
