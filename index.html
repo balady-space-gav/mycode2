@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الشهادات الصحية المطور</title>
+    <title>نظام الشهادات الصحية  المطور</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -40,14 +40,10 @@
 
         .header-image-container { width: 100%; height: 70px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
         .header-uploaded-img { width: 120%; height: 150%; object-fit: contain; }
-        .images-section { display: flex; justify-content: flex-start; padding-right: 35px; margin-bottom: 10px; gap: 10px; align-items: center; }
+        .images-section { display: flex; justify-content: flex-start; padding-right: 35px; margin-bottom: 10px; gap: 10px; }
         .qr-photo, .user-photo { width: 115px; height: 115px; }
         .user-photo { object-fit: fill; }
-        
-        /* تحسينات لضمان ثبات جودة الباركود وتجنب التمدد الحركي */
-        .qr-photo { padding: 4px; background: #ffffff; display: flex; justify-content: center; align-items: center; }
-        .qr-photo img { width: 100% !important; height: 100% !important; object-fit: contain; }
-        
+        .qr-photo img { width: 100%; height: 100%; object-fit: contain; }
         .title-badge { text-align: center; color: var(--balady-green); font-size: 26px; font-weight: 700; margin-bottom: 10px; }
         .info-table { width: 100%; border-collapse: collapse; border: 2px solid #666666; font-size: 12px; }
         .info-table td { padding: 8px 5px; vertical-align: middle; }
@@ -85,20 +81,20 @@
         <form id="certForm" onsubmit="processForm(event)">
             <div class="form-grid">
                 <div class="form-group"><label>صورة الشعار (الهيدر):</label><input type="file" id="inHeaderImg" accept="image/*" required></div>
-                <div class="form-group"><label>الصورة الشخصية للعامل :</label><input type="file" id="inUserImg" accept="image/*" required></div>
+                <div class="form-group"><label>الصورة الشخصية للعامل  :</label><input type="file" id="inUserImg" accept="image/*" required></div>
                 <div class="form-group"><label>رقم الشهادة:</label><input type="text" id="cNo" placeholder="26069-1447" required></div>
                 <div class="form-group"><label>مكان الإصدار:</label><input type="text" id="cPlace" placeholder=" " required></div>
                 <div class="form-group"><label>تاريخ الإصدار:</label><input type="text" id="cIssueDate" placeholder="1447/12/21" required></div>
                 <div class="form-group"><label>نهاية الصلاحية:</label><input type="text" id="cExpiryDate" placeholder="1448/12/21" required></div>
                 <div class="form-group full-width"><label>الاسم الكامل لطالب :</label><input type="text" id="cName" placeholder="MD IQBAL HOSSAIN" required></div>
-                <div class="form-group"><label>رقم الهوية / :</label><input type="text" id="cIdNo" placeholder="2500113531" required></div>
+                <div class="form-group"><label>رقم الهوية  / :</label><input type="text" id="cIdNo" placeholder="2500113531" required></div>
                 <div class="form-group"><label>الجنس:</label><input type="text" id="cGender" placeholder="ذكر" required></div>
                 <div class="form-group"><label>الجنسية:</label><input type="text" id="cNat" placeholder="يمني " required></div>
-                <div class="form-group"><label>المهنة :</label><input type="text" id="cJob" placeholder="عامل " required></div>
-                <div class="form-group"><label>البرنامج التثقيفي :</label><input type="text" id="cProg" placeholder="اسم المنشاة " required></div>
-                <div class="form-group"><label>تاريخ انتهاء البرنامج :</label><input type="text" id="cProgExp" placeholder="1450/12/28" required></div>
-                <div class="form-group full-width"><label>اسم المنشاة :</label><input type="text" id="cFacName" placeholder=" " required></div>
-                <div class="form-group full-width"><label>رقم رخصة المنشاة :</label><input type="text" id="cFacLic" placeholder="43058039930" required></div>
+                <div class="form-group"><label>المهنة  :</label><input type="text" id="cJob" placeholder="عامل " required></div>
+                <div class="form-group"><label>البرنامج التثقيفي  :</label><input type="text" id="cProg" placeholder="اسم المنشاة   " required></div>
+                <div class="form-group"><label>تاريخ انتهاء البرنامج  :</label><input type="text" id="cProgExp" placeholder="1450/12/28" required></div>
+                <div class="form-group full-width"><label>اسم المنشاة  :</label><input type="text" id="cFacName" placeholder=" " required></div>
+                <div class="form-group full-width"><label>رقم رخصة المنشاة  :</label><input type="text" id="cFacLic" placeholder="43058039930" required></div>
             </div>
             <button type="submit" class="btn-submit">توليد ومعاينة الشهادة</button>
         </form>
@@ -134,9 +130,9 @@
         <div class="card-page third-page-balady" id="page3">
             <div class="header-image-container"><img id="outHeaderImg3" class="header-uploaded-img" src=""></div>
             <div class="balady-avatar-center-wrapper"><div class="balady-avatar-center"><img id="outUserImg3" src=""></div></div>
-            <div class="title-badge">شهادة صحية </div>
+             <div class="title-badge">شهادة صحية </div>
             <div class="balady-main-card">
-                <div class="balady-group-label">بيانات الشهادة :</div>
+                <div class="balady-group-label">بيانات الشهادة  :</div>
                 <div class="balady-row"><span class="balady-item-name">رقم الشهادة</span><span class="balady-item-value" id="vCertNo"></span></div>
                 <div class="balady-row"><span class="balady-item-name">تاريخ الإصدار</span><span class="balady-item-value" id="vIssueDate"></span></div>
                 <div class="balady-row"><span class="balady-item-name">نهاية الصلاحية</span><span class="balady-item-value" id="vExpiryDate"></span></div>
@@ -147,18 +143,18 @@
                 <div class="balady-row"><span class="balady-item-name">الجنس</span><span class="balady-item-value" id="vGender"></span></div>
                 <div class="balady-row"><span class="balady-item-name">الجنسية</span><span class="balady-item-value" id="vNat"></span></div>
                 <div class="balady-row"><span class="balady-item-name">المهنة</span><span class="balady-item-value" id="vJob"></span></div>
-                <div class="balady-row"><span class="balady-item-name">البرنامج التثقيفي </span><span class="balady-item-value" id="vProg"></span></div>
+                <div class="balady-row"><span class="balady-item-name">البرنامج التثقيفي  </span><span class="balady-item-value" id="vProg"></span></div>
                 <div class="balady-row"><span class="balady-item-name">تاريخ انتهاء البرنامج</span><span class="balady-item-value" id="vProgExp"></span></div>
                 <div class="balady-separator"></div>
-                <div class="balady-group-label">بيانات المنشاة :</div>
-                <div class="balady-row"><span class="balady-item-name">اسم المنشاة </span><span class="balady-item-value" id="vFacName"></span></div>
-                <div class="balady-row"><span class="balady-item-name">رقم رخصة المنشاة </span><span class="balady-item-value" id="vFacLic"></span></div>
+                <div class="balady-group-label">بيانات المنشاة  :</div>
+                <div class="balady-row"><span class="balady-item-name">اسم المنشاة  </span><span class="balady-item-value" id="vFacName"></span></div>
+                <div class="balady-row"><span class="balady-item-name">رقم رخصة المنشاة  </span><span class="balady-item-value" id="vFacLic"></span></div>
             </div>
         </div>
     </div>
 
     <div class="control-panel" id="controlPanel">
-        <button class="btn-pdf" id="btnPdfSave" onclick="buildAbsolutePDF()">حفظ وتحميل الـ PDF النهائي</button>
+        <button class="btn-pdf" onclick="buildAbsolutePDF()">حفظ وتحميل الـ PDF النهائي</button>
     </div>
 
     <script>
@@ -281,14 +277,14 @@
                                 cFacLic: cFacLic
                             });
 
+                            // ملاحظة: روابط الباركود لها حد أقصى للحروف، يفضل رفع الصور على سيرفر إذا كانت أحجامها ضخمة، ولكن لتعمل محلياً سنمرر الرابط الشامل
                             const liveTrackingUrl = window.location.origin + window.location.pathname + "?" + params.toString();
                             
-                            // تعديل مستوى تصحيح الأخطاء إلى M لزيادة سماكة واستقرار المربعات عند الرندرة في الـ PDF
                             new QRCode(document.getElementById("outQrImg"), { 
                                 text: liveTrackingUrl, 
                                 width: 115, 
                                 height: 115, 
-                                correctLevel: QRCode.CorrectLevel.M 
+                                correctLevel: QRCode.CorrectLevel.L // تم تقليل مستوى الأخطاء ليتسع الرابط الطويل بكفاءة
                             });
 
                             document.getElementById('inputFormContainer').style.display = 'none';
@@ -304,34 +300,14 @@
             });
         }
 
-        // استخدام دالة تأخيرية لضمان ثبات رسم العناصر قبل التقاط الشاشة
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-
         async function buildAbsolutePDF() {
-            const btn = document.getElementById('btnPdfSave');
-            btn.innerText = "جاري إعداد الـ PDF والباركود...";
-            btn.disabled = true;
-
             const { jsPDF } = window.jspdf;
-            // رفع الـ scale إلى 4 لضمان أعلى جودة ممكنة للخطوط والباركود
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [116, 166] });
             const p1 = document.getElementById('page1'), p2 = document.getElementById('page2'), p3 = document.getElementById('page3');
             const filename = document.getElementById('cNo').value;
 
             p1.style.display = 'block'; p2.style.display = 'block'; p3.style.display = 'block';
-            
-            // استخدام تكتيك تأخيري 400 ملي ثانية ليرسم المتصفح الباركود بشكل كامل ومستقر
-            await sleep(400);
-
-            const opts = { 
-                scale: 4, 
-                useCORS: true, 
-                logging: false, 
-                backgroundColor: '#ffffff',
-                imageTimeout: 0
-            };
+            const opts = { scale: 4, useCORS: true, logging: false, backgroundColor: '#ffffff' };
 
             try {
                 const c1 = await html2canvas(p1, opts); pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
@@ -346,12 +322,7 @@
                 } else {
                     p3.style.display = 'none';
                 }
-            } catch (err) { 
-                alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.'); 
-            } finally {
-                btn.innerText = "حفظ وتحميل الـ PDF النهائي";
-                btn.disabled = false;
-            }
+            } catch (err) { alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.'); }
         }
     </script>
 </body>
