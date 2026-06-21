@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الشهادات الصحية المطابق للأصل</title>
+    <title>نظام الشهادات المطور - النسخة الأصلية المحمية</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -11,45 +11,67 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+        
+        :root {
+            --balady-green: #0a8243;
+            --text-dark: #000000;
+            --text-gray: #7a7a7a;
+            --line-color: #cccccc;
+        }
  
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background-color: #f5f7fa; padding: 20px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
 
-        /* نموذج الإدخال */
         .form-container { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 650px; margin-bottom: 20px; }
-        .form-container h2 { color: #0a8243; margin-bottom: 20px; text-align: center; font-weight: 700; border-bottom: 2px solid #0a8243; padding-bottom: 10px; }
+        .form-container h2 { color: var(--balady-green); margin-bottom: 20px; text-align: center; font-weight: 700; border-bottom: 2px solid var(--balady-green); padding-bottom: 10px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
         .form-group { margin-bottom: 10px; }
+        .form-group.full-width { grid-column: span 2; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
         .form-group input { width: 100%; padding: 10px; border: 1px solid #cccccc; border-radius: 6px; font-size: 14px; }
-        .btn-submit { background-color: #0a8243; color: white; border: none; padding: 14px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; margin-top: 15px; }
+        .btn-submit { background-color: var(--balady-green); color: white; border: none; padding: 14px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; margin-top: 15px; }
 
-        /* منطقة البطاقة - مطابقة تماماً للصورة الأولى */
         .preview-wrapper { display: none; width: 440px; }
-        .card-page { background: #ffffff; width: 440px; height: 630px; padding: 20px 30px; border: 1px solid #dcdcdc; margin-bottom: 20px; overflow: hidden; position: relative; }
+        .card-page { background: #ffffff; width: 440px; height: 630px; padding: 25px 35px; border: 1px solid #dcdcdc; margin-bottom: 20px; overflow: hidden; position: relative; }
         
-        .header-image-container { width: 100%; height: 75px; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; }
-        .header-uploaded-img { width: 100%; height: 100%; object-fit: contain; }
-        
-        /* قسم الصور التناظري الأنيق */
-        .images-section { display: flex; justify-content: center; margin-bottom: 5px; gap: 0px; align-items: center; }
-        .user-photo { width: 110px; height: 110px; object-fit: cover; }
-        .qr-photo { width: 110px; height: 110px; background: #ffffff; padding: 2px; display: flex; justify-content: center; align-items: center; }
-        .qr-photo img { width: 100% !important; height: 100% !important; object-fit: contain; }
-        
-        .title-badge { text-align: center; color: #0a8243; font-size: 28px; font-weight: 800; margin-bottom: 15px; letter-spacing: 1px; }
-        
-        /* الجدول المطابق للصورة الأولى بدون حدود داخلية ضيقة وبإطار خارجي رمادي دائري الحواف */
-        .info-box { border: 3px solid #b5b5b5; border-radius: 12px; padding: 15px 20px; background: #ffffff; }
-        .info-table { width: 100%; border-collapse: collapse; font-size: 15px; }
-        .info-table td { padding: 7px 0; vertical-align: middle; color: #000000; font-weight: 700; }
-        .label-cell { text-align: right; width: 35%; font-size: 16px; font-weight: 700; }
-        .value-cell { text-align: center; width: 65%; font-size: 16px; font-weight: 700; }
-        .divider-row td { border-bottom: 2px solid #b5b5b5; padding-bottom: 10px; margin-bottom: 10px; }
-        .divider-row + tr td { padding-top: 10px; }
+        #page3 { display: none; }
 
-        /* التحكم */
+        .header-image-container { width: 100%; height: 70px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
+        .header-uploaded-img { width: 120%; height: 150%; object-fit: contain; }
+        .images-section { display: flex; justify-content: flex-start; padding-right: 35px; margin-bottom: 10px; gap: 10px; align-items: center; }
+        
+        .qr-photo, .user-photo { width: 115px; height: 115px; }
+        .user-photo { object-fit: fill; }
+        .qr-photo { background: #ffffff; padding: 6px; border: 1px solid #e0e0e0; display: flex; justify-content: center; align-items: center; }
+        .qr-photo img { width: 100% !important; height: 100% !important; object-fit: contain; display: block; }
+        
+        .title-badge { text-align: center; color: var(--balady-green); font-size: 26px; font-weight: 700; margin-bottom: 10px; }
+        .info-table { width: 100%; border-collapse: collapse; border: 2px solid #666666; font-size: 12px; }
+        .info-table td { padding: 8px 5px; vertical-align: middle; }
+        .section-divider { border-bottom: 3px solid #666666; background-color: #f9f9f9; }
+        .label-cell { font-weight: 800; text-align: right; width: 35%; }
+        .colon-cell { text-align: center; width: 5%; font-weight: 800; }
+        .value-cell { text-align: right; width: 60%; font-weight: 700; }
+
+        .back-page { display: flex; flex-direction: column; padding: 50px 30px; justify-content: center; }
+        .terms-list { list-style: none; text-align: justify; }
+        .terms-list li { margin-bottom: 25px; position: relative; padding-right: 25px; }
+        .terms-list li h2 { font-size: 19px; font-weight: 800; display: inline; line-height: 1.5; }
+        .terms-list li::before { content: "*"; position: absolute; right: 0; top: 2px; font-weight: bold; font-size: 24px; }
+
+        .third-page-balady { background-color: #fafbfc; padding: 10px 15px; display: flex; flex-direction: column; align-items: center; border: 3px solid var(--balady-green); }
+        .balady-avatar-center-wrapper { width: 80%; display: flex; justify-content: center; margin-bottom: 5px; }
+        .balady-avatar-center { width: 65px; height: 75px; border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .balady-avatar-center img { width: 100%; height: 100%; object-fit: fill; }
+        .balady-green-title { color: var(--balady-green); font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .balady-main-card { background: #ffffff; border-radius: 6px; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04); border: 1px solid #ededed; width: 100%; padding: 10px 15px; }
+        .balady-group-label { color: var(--balady-green); font-size: 11px; font-weight: 700; text-align: right; }
+        .balady-row { display: flex; justify-content: space-between; font-size: 12px; }
+        .balady-item-name { color: var(--text-dark); font-weight: 700; width: 40%; }
+        .balady-item-value { color: var(--text-dark); font-weight: 600; width: 60%; }
+        .balady-separator { width: 100%; height: 2px; background-color: var(--line-color); margin: 3px 0; }
+
         .control-panel { display: none; width: 440px; margin-top: 10px; }
         .btn-pdf { background-color: #d32f2f; color: white; border: none; padding: 15px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
     </style>
@@ -57,44 +79,78 @@
 <body>
 
     <div class="form-container" id="inputFormContainer">
-        <h2>نظام طباعة الشهادات الصحية المطور</h2>
+        <h2>نظام طباعة الشهادات المطور</h2>
         <form id="certForm" onsubmit="processForm(event)">
             <div class="form-grid">
                 <div class="form-group"><label>صورة الشعار (الهيدر):</label><input type="file" id="inHeaderImg" accept="image/*" required></div>
-                <div class="form-group"><label>الصورة الشخصية للعامل:</label><input type="file" id="inUserImg" accept="image/*" required></div>
-                <div class="form-group"><label>رقم الشهادة:</label><input type="text" id="cNo" placeholder="36803-1426" required></div>
-                <div class="form-group"><label>مكان الإصدار:</label><input type="text" id="cPlace" placeholder="أمانة مدينة الرياض" required></div>
-                <div class="form-group"><label>نهاية الصلاحية:</label><input type="text" id="cExpiryDate" placeholder="17/06/1448" required></div>
-                <div class="form-group"><label>الاسم الكامل:</label><input type="text" id="cName" placeholder="معاذ احمد محسن" required></div>
-                <div class="form-group"><label>رقم الهوية / الإقامة:</label><input type="text" id="cIdNo" placeholder="2179961053" required></div>
+                <div class="form-group"><label>الصورة الشخصية للعامل :</label><input type="file" id="inUserImg" accept="image/*" required></div>
+                <div class="form-group"><label>رقم الشهادة:</label><input type="text" id="cNo" placeholder="26069-1447" required></div>
+                <div class="form-group"><label>مكان الإصدار:</label><input type="text" id="cPlace" placeholder=" " required></div>
+                <div class="form-group"><label>تاريخ الإصدار:</label><input type="text" id="cIssueDate" placeholder="1447/12/21" required></div>
+                <div class="form-group"><label>نهاية الصلاحية:</label><input type="text" id="cExpiryDate" placeholder="1448/12/21" required></div>
+                <div class="form-group full-width"><label>الاسم الكامل لطالب :</label><input type="text" id="cName" placeholder="MD IQBAL HOSSAIN" required></div>
+                <div class="form-group"><label>رقم الهوية / :</label><input type="text" id="cIdNo" placeholder="2500113531" required></div>
                 <div class="form-group"><label>الجنس:</label><input type="text" id="cGender" placeholder="ذكر" required></div>
-                <div class="form-group"><label>الجنسية:</label><input type="text" id="cNat" placeholder="اليمن" required></div>
-                <div class="form-group"><label>المهنة:</label><input type="text" id="cJob" placeholder="عامل تحميل وتنزيل" required></div>
+                <div class="form-group"><label>الجنسية:</label><input type="text" id="cNat" placeholder="يمني " required></div>
+                <div class="form-group"><label>المهنة :</label><input type="text" id="cJob" placeholder="عامل " required></div>
+                <div class="form-group"><label>البرنامج التثقيفي :</label><input type="text" id="cProg" placeholder="اسم المنشاة " required></div>
+                <div class="form-group"><label>تاريخ انتهاء البرنامج :</label><input type="text" id="cProgExp" placeholder="1450/12/28" required></div>
+                <div class="form-group full-width"><label>اسم المنشاة :</label><input type="text" id="cFacName" placeholder=" " required></div>
+                <div class="form-group full-width"><label>رقم رخصة المنشاة :</label><input type="text" id="cFacLic" placeholder="43058039930" required></div>
             </div>
-            <button type="submit" class="btn-submit">توليد ومعاينة البطاقة المطابقة</button>
+            <button type="submit" class="btn-submit">توليد ومعاينة الشهادة</button>
         </form>
     </div>
 
     <div class="preview-wrapper" id="previewWrapper">
         <div class="card-page" id="page1">
             <div class="header-image-container"><img id="outHeaderImg1" class="header-uploaded-img" src=""></div>
-            <div class="images-section">
-                <img id="outUserImg1" class="user-photo" src="">
-                <div id="outQrImg" class="qr-photo"></div>
-            </div>
-            <div class="title-badge">شهادة صحية</div>
-            
-            <div class="info-box">
-                <table class="info-table">
-                    <tr><td class="value-cell" id="lCertNo"></td><td class="label-cell">رقم الشهادة</td></tr>
-                    <tr><td class="value-cell" id="lCertPlace"></td><td class="label-cell">مكان الاصدار</td></tr>
-                    <tr class="divider-row"><td class="value-cell" id="lExpiryDate"></td><td class="label-cell">نهاية الصلاحية</td></tr>
-                    <tr><td class="value-cell" id="lName"></td><td class="label-cell">الاسم</td></tr>
-                    <tr><td class="value-cell" id="lIdNo"></td><td class="label-cell">رقم الهوية</td></tr>
-                    <tr><td class="value-cell" id="lGender"></td><td class="label-cell">الجنس</td></tr>
-                    <tr><td class="value-cell" id="lNat"></td><td class="label-cell">الجنسية</td></tr>
-                    <tr><td class="value-cell" id="lJob"></td><td class="label-cell">المهنة</td></tr>
-                </table>
+            <div class="images-section"><div id="outQrImg" class="qr-photo"></div><img id="outUserImg1" class="user-photo"></div>
+            <div class="title-badge">شهادة صحية </div>
+            <table class="info-table">
+                <tr><td class="label-cell">رقم الشهادة</td><td class="colon-cell">:</td><td class="value-cell" id="lCertNo"></td></tr>
+                <tr><td class="label-cell">مكان الإصدار</td><td class="colon-cell">:</td><td class="value-cell" id="lCertPlace"></td></tr>
+                <tr class="section-divider"><td class="label-cell">نهاية الصلاحية</td><td class="colon-cell">:</td><td class="value-cell" id="lExpiryDate"></td></tr>
+                <tr><td class="label-cell">الاسم</td><td class="colon-cell">:</td><td class="value-cell" id="lName"></td></tr>
+                <tr><td class="label-cell">رقم الهوية</td><td class="colon-cell">:</td><td class="value-cell" id="lIdNo"></td></tr>
+                <tr><td class="label-cell">الجنس</td><td class="colon-cell">:</td><td class="value-cell" id="lGender"></td></tr>
+                <tr><td class="label-cell">الجنسية</td><td class="colon-cell">:</td><td class="value-cell" id="lNat"></td></tr>
+                <tr><td class="label-cell">المهنة</td><td class="colon-cell">:</td><td class="value-cell" id="lJob"></td></tr>
+            </table>
+        </div>
+
+        <div class="card-page back-page" id="page2">
+            <ul class="terms-list">
+                <li><h2>حامل هذه الشهادة حاصل على تقرير طبي يثبت خلوه من الأمراض المعدية وأجريت له التطعيمات التي تخوله للعمل في محلات الأغذية والصحة العامة</h2></li>
+                <li><h2>تشغيل عمال ليس لديهم شهادات صحية أو لديهم شهادات صحية منتهية يعاقب عليها النظام بغرامة مالية عن كل عامل</h2></li>
+                <li><h2>تجديد هذه الشهادة قبل انتهائها بثلاثين يوماً</h2></li>
+                <li><h2>لا تعتبر هذه الشهادة إثباتاً هوياً لحامليها</h2></li>
+                <li><h2>للتأكد من سلامة الشهادة يرجى زيارة موقع أمانة منطقة الرياض</h2></li>
+            </ul>
+        </div>
+
+        <div class="card-page third-page-balady" id="page3">
+            <div class="header-image-container"><img id="outHeaderImg3" class="header-uploaded-img" src=""></div>
+            <div class="balady-avatar-center-wrapper"><div class="balady-avatar-center"><img id="outUserImg3" src=""></div></div>
+            <div class="title-badge">شهادة صحية </div>
+            <div class="balady-main-card">
+                <div class="balady-group-label">بيانات الشهادة :</div>
+                <div class="balady-row"><span class="balady-item-name">رقم الشهادة</span><span class="balady-item-value" id="vCertNo"></span></div>
+                <div class="balady-row"><span class="balady-item-name">تاريخ الإصدار</span><span class="balady-item-value" id="vIssueDate"></span></div>
+                <div class="balady-row"><span class="balady-item-name">نهاية الصلاحية</span><span class="balady-item-value" id="vExpiryDate"></span></div>
+                <div class="balady-separator"></div>
+                <div class="balady-group-label">بيانات صاحب الشهادة :</div>
+                <div class="balady-row"><span class="balady-item-name">الاسم</span><span class="balady-item-value" id="vName"></span></div>
+                <div class="balady-row"><span class="balady-item-name">رقم الهوية </span><span class="balady-item-value" id="vIdNo"></span></div>
+                <div class="balady-row"><span class="balady-item-name">الجنس</span><span class="balady-item-value" id="vGender"></span></div>
+                <div class="balady-row"><span class="balady-item-name">الجنسية</span><span class="balady-item-value" id="vNat"></span></div>
+                <div class="balady-row"><span class="balady-item-name">المهنة</span><span class="balady-item-value" id="vJob"></span></div>
+                <div class="balady-row"><span class="balady-item-name">البرنامج التثقيفي </span><span class="balady-item-value" id="vProg"></span></div>
+                <div class="balady-row"><span class="balady-item-name">تاريخ انتهاء البرنامج</span><span class="balady-item-value" id="vProgExp"></span></div>
+                <div class="balady-separator"></div>
+                <div class="balady-group-label">بيانات المنشاة :</div>
+                <div class="balady-row"><span class="balady-item-name">اسم المنشاة </span><span class="balady-item-value" id="vFacName"></span></div>
+                <div class="balady-row"><span class="balady-item-name">رقم رخصة المنشاة </span><span class="balady-item-value" id="vFacLic"></span></div>
             </div>
         </div>
     </div>
@@ -104,41 +160,36 @@
     </div>
 
     <script>
-        // تفكيك البيانات ورندرتها فوراً عند مسح الباركود
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const dataParam = urlParams.get('v');
-            
-            if (dataParam) {
-                try {
-                    const data = JSON.parse(decodeURIComponent(escape(atob(dataParam))));
-                    
-                    document.getElementById('inputFormContainer').style.display = 'none';
-                    document.getElementById('previewWrapper').style.display = 'block';
-                    document.getElementById('page1').style.display = 'block';
-                    document.getElementById('controlPanel').style.display = 'none';
+        let globalQrText = ""; // الاحتفاظ بنص الرابط الأصلي بدقة لإنتاج النسخة المتجهة بالـ PDF
 
-                    document.getElementById('lCertNo').innerText = data.cNo;
-                    document.getElementById('lCertPlace').innerText = data.cPlace;
-                    document.getElementById('lExpiryDate').innerText = data.cExpiryDate;
-                    document.getElementById('lName').innerText = data.cName;
-                    document.getElementById('lIdNo').innerText = data.cIdNo;
-                    document.getElementById('lGender').innerText = data.cGender;
-                    document.getElementById('lNat').innerText = data.cNat;
-                    document.getElementById('lJob').innerText = data.cJob;
-                    
-                    if(data.hImg) document.getElementById('outHeaderImg1').src = data.hImg;
-                    if(data.uImg) document.getElementById('outUserImg1').src = data.uImg;
-                    
-                    // توليد الباركود ليكون مطابقاً في العرض النهائي وثابت المربعات واسعاً ومفتوحاً
-                    new QRCode(document.getElementById("outQrImg"), { 
-                        text: window.location.href, 
-                        width: 110, height: 110, 
-                        correctLevel: QRCode.CorrectLevel.M 
-                    });
-                } catch (e) {
-                    alert("خطأ في قراءة بيانات الباركود.");
-                }
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param) || "";
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (getUrlParam('view') === 'page3') {
+                document.getElementById('inputFormContainer').style.display = 'none';
+                document.getElementById('previewWrapper').style.display = 'block';
+                document.getElementById('page1').style.display = 'none';
+                document.getElementById('page2').style.display = 'none';
+                document.getElementById('page3').style.display = 'block';
+
+                document.getElementById('vCertNo').innerText = getUrlParam('cNo');
+                document.getElementById('vIssueDate').innerText = getUrlParam('cIssueDate');
+                document.getElementById('vExpiryDate').innerText = getUrlParam('cExpiryDate');
+                document.getElementById('vName').innerText = getUrlParam('cName');
+                document.getElementById('vIdNo').innerText = getUrlParam('cIdNo');
+                document.getElementById('vGender').innerText = getUrlParam('cGender');
+                document.getElementById('vNat').innerText = getUrlParam('cNat');
+                document.getElementById('vJob').innerText = getUrlParam('cJob');
+                document.getElementById('vProg').innerText = getUrlParam('cProg');
+                document.getElementById('vProgExp').innerText = getUrlParam('cProgExp');
+                document.getElementById('vFacName').innerText = getUrlParam('cFacName');
+                document.getElementById('vFacLic').innerText = getUrlParam('cFacLic');
+
+                if(getUrlParam('hImg')) document.getElementById('outHeaderImg3').src = getUrlParam('hImg');
+                if(getUrlParam('uImg')) document.getElementById('outUserImg3').src = getUrlParam('uImg');
             }
         });
 
@@ -153,6 +204,11 @@
             const cGender = document.getElementById('cGender').value;
             const cNat = document.getElementById('cNat').value;
             const cJob = document.getElementById('cJob').value;
+            const cIssueDate = document.getElementById('cIssueDate').value;
+            const cProg = document.getElementById('cProg').value;
+            const cProgExp = document.getElementById('cProgExp').value;
+            const cFacName = document.getElementById('cFacName').value;
+            const cFacLic = document.getElementById('cFacLic').value;
 
             document.getElementById('lCertNo').innerText = cNo;
             document.getElementById('lCertPlace').innerText = cPlace;
@@ -162,62 +218,118 @@
             document.getElementById('lGender').innerText = cGender;
             document.getElementById('lNat').innerText = cNat;
             document.getElementById('lJob').innerText = cJob;
+        
+            document.getElementById('vCertNo').innerText = cNo;
+            document.getElementById('vIssueDate').innerText = cIssueDate;
+            document.getElementById('vExpiryDate').innerText = cExpiryDate;
+            document.getElementById('vName').innerText = cName;
+            document.getElementById('vIdNo').innerText = cIdNo;
+            document.getElementById('vGender').innerText = cGender;
+            document.getElementById('vNat').innerText = cNat;
+            document.getElementById('vJob').innerText = cJob;
+            document.getElementById('vProg').innerText = cProg;
+            document.getElementById('vProgExp').innerText = cProgExp;
+            document.getElementById('vFacName').innerText = cFacName;
+            document.getElementById('vFacLic').innerText = cFacLic;
 
-            const headerFile = document.getElementById('inHeaderImg').files[0];
-            const userFile = document.getElementById('inUserImg').files[0];
+            const mapping = [
+                { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3' },
+                { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3' }
+            ];
 
-            if(headerFile && userFile) {
-                const readerH = new FileReader();
-                readerH.onload = function(eH) {
-                    const hSrc = eH.target.result;
-                    document.getElementById('outHeaderImg1').src = hSrc;
+            let loadedCount = 0;
 
-                    const readerU = new FileReader();
-                    readerU.onload = function(eU) {
-                        const uSrc = eU.target.result;
-                        document.getElementById('outUserImg1').src = uSrc;
+            mapping.forEach(item => {
+                const file = document.getElementById(item.input).files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        if(item.view1) document.getElementById(item.view1).src = e.target.result;
+                        if(item.view3) document.getElementById(item.view3).src = e.target.result;
 
-                        document.getElementById("outQrImg").innerHTML = "";
-                        
-                        // ضغط وتمرير البيانات النصية فقط بالرابط حتى يظل الباركود واسع المربعات ومطابق للصورة الأولى
-                        const minimalData = { cNo, cPlace, cExpiryDate, cName, cIdNo, cGender, cNat, cJob };
-                        const stringified = btoa(unescape(encodeURIComponent(JSON.stringify(minimalData))));
-                        const liveTrackingUrl = window.location.origin + window.location.pathname + "?v=" + stringified;
-                        
-                        new QRCode(document.getElementById("outQrImg"), { 
-                            text: liveTrackingUrl, 
-                            width: 110, height: 110, 
-                            correctLevel: QRCode.CorrectLevel.M 
-                        });
+                        loadedCount++;
+                        if(loadedCount === 2) {
+                            document.getElementById("outQrImg").innerHTML = "";
+                            
+                            const params = new URLSearchParams({
+                                view: 'page3', cNo, cPlace, cExpiryDate, cName, cIdNo, cGender, cNat, cJob, cIssueDate, cProg, cProgExp, cFacName, cFacLic
+                            });
 
-                        document.getElementById('inputFormContainer').style.display = 'none';
-                        document.getElementById('previewWrapper').style.display = 'block';
-                        document.getElementById('controlPanel').style.display = 'block';
+                            globalQrText = window.location.origin + window.location.pathname + "?" + params.toString();
+                            
+                            new QRCode(document.getElementById("outQrImg"), { 
+                                text: globalQrText, 
+                                width: 115, height: 115, 
+                                correctLevel: QRCode.CorrectLevel.M
+                            });
+
+                            document.getElementById('inputFormContainer').style.display = 'none';
+                            document.getElementById('previewWrapper').style.display = 'block';
+                            document.getElementById('page1').style.display = 'block';
+                            document.getElementById('page2').style.display = 'block';
+                            document.getElementById('page3').style.display = 'none'; 
+                            document.getElementById('controlPanel').style.display = 'block';
+                        }
                     }
-                    readerU.readAsDataURL(userFile);
+                    reader.readAsDataURL(file);
                 }
-                readerH.readAsDataURL(headerFile);
-            }
+            });
         }
 
         async function buildAbsolutePDF() {
             const btn = document.getElementById('btnPdfSave');
-            btn.innerText = "جاري الحفظ...";
+            btn.innerText = "جاري الحفظ الفائق والدرع البرمي...";
             btn.disabled = true;
 
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [116, 166] });
-            const p1 = document.getElementById('page1');
+            const p1 = document.getElementById('page1'), p2 = document.getElementById('page2'), p3 = document.getElementById('page3');
+            const filename = document.getElementById('cNo').value;
+
+            p1.style.display = 'block'; p2.style.display = 'block'; p3.style.display = 'block';
+            await new Promise(resolve => setTimeout(resolve, 400));
+
+            // إخفاء الباركود من الشاشة مؤقتاً أثناء الالتقاط حتى لا يتأثر بالبكسلة والتشويه
+            const originalQrContainer = document.getElementById("outQrImg");
+            originalQrContainer.style.visibility = "hidden";
 
             const opts = { scale: 4, useCORS: true, logging: false, backgroundColor: '#ffffff' };
 
             try {
+                // 1. التقاط خلفية الصفحة الأولى النظيفة
                 const c1 = await html2canvas(p1, opts); 
                 pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-                pdf.save('Health_Certificate_' + document.getElementById('cNo').value + '.pdf');
+                
+                // 🌟 الحل الجذري: توليد الباركود كعنصر مستقل نقي ووضعه فوق الـ PDF مباشرة بأبعاده الصحيحة
+                // موقع مربع الباركود في كودك التناظري يقع بدقة عند الإحداثيات التالية:
+                // العرض: 30mm، الارتفاع: 30mm، اليسار: 44mm، ومن أعلى الهيدر: 24mm
+                const tempDiv = document.createElement("div");
+                new QRCode(tempDiv, { text: globalQrText, width: 300, height: 300, correctLevel: QRCode.CorrectLevel.L });
+                
+                await new Promise(res => setTimeout(res, 100));
+                const qrImgSrc = tempDiv.querySelector("img").src;
+                
+                // حقن الباركود فائق النقاوة فوق الملف ليبقى حياً وصالحاً للمسح الدائم
+                pdf.addImage(qrImgSrc, 'PNG', 44, 24, 30, 30);
+
+                // 2. التقاط وتوليد باقي الصفحات بشكل طبيعي وكامل
+                pdf.addPage([116, 166], 'portrait');
+                const c2 = await html2canvas(p2, opts); pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
+                
+                pdf.addPage([116, 166], 'portrait');
+                const c3 = await html2canvas(p3, opts); pdf.addImage(c3.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
+                
+                pdf.save('Balady_Final_Form_' + filename + '.pdf');
+
+                if (window.location.href.includes('view=page3')) {
+                    p1.style.display = 'none'; p2.style.display = 'none';
+                } else {
+                    p3.style.display = 'none';
+                }
             } catch (err) { 
-                alert('حدث خطأ في استخراج الـ PDF.'); 
+                alert('حدث خطأ أثناء معالجة البيانات، أعد المحاولة.'); 
             } finally {
+                originalQrContainer.style.visibility = "visible";
                 btn.innerText = "حفظ وتحميل الـ PDF النهائي";
                 btn.disabled = false;
             }
