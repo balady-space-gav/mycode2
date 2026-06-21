@@ -278,15 +278,25 @@
                             });
 
                             // ملاحظة: روابط الباركود لها حد أقصى للحروف، يفضل رفع الصور على سيرفر إذا كانت أحجامها ضخمة، ولكن لتعمل محلياً سنمرر الرابط الشامل
-                            const liveTrackingUrl = window.location.origin + window.location.pathname + "?" + params.toString();
-                            
-                            new QRCode(document.getElementById("outQrImg"), { 
-                                text: liveTrackingUrl, 
-                                width: 115, 
-                                height: 115, 
-                                correctLevel: QRCode.CorrectLevel.M // تم تقليل مستوى الأخطاء ليتسع الرابط الطويل بكفاءة
-                            });
+                       const liveTrackingUrl =
+window.location.origin +
+window.location.pathname +
+"?" +
+params.toString();
 
+if (liveTrackingUrl.length > 2000) {
+alert("البيانات طويلة جداً للباركود");
+return;
+}
+
+document.getElementById("outQrImg").innerHTML = "";
+
+new QRCode(document.getElementById("outQrImg"), {
+text: liveTrackingUrl,
+width: 115,
+height: 115,
+correctLevel: QRCode.CorrectLevel.M
+});
                             document.getElementById('inputFormContainer').style.display = 'none';
                             document.getElementById('previewWrapper').style.display = 'block';
                             document.getElementById('page1').style.display = 'block';
@@ -300,30 +310,64 @@
             });
         }
 
-        async function buildAbsolutePDF() {
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [116, 166] });
-            const p1 = document.getElementById('page1'), p2 = document.getElementById('page2'), p3 = document.getElementById('page3');
-            const filename = document.getElementById('cNo').value;
+      async function buildAbsolutePDF() {
+const { jsPDF } = window.jspdf;
 
-            p1.style.display = 'block'; p2.style.display = 'block'; p3.style.display = 'block';
-            const opts = { scale: 4, useCORS: true, logging: false, backgroundColor: '#ffffff' };
+const pdf = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4'
+});
 
-            try {
-                const c1 = await html2canvas(p1, opts); pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-                pdf.addPage([116, 166], 'portrait');
-                const c2 = await html2canvas(p2, opts); pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-                pdf.addPage([116, 166], 'portrait');
-                const c3 = await html2canvas(p3, opts); pdf.addImage(c3.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-                pdf.save('Balady_Final_Form_' + filename + '.pdf');
+const p1 = document.getElementById('page1');
+const p2 = document.getElementById('page2');
+const p3 = document.getElementById('page3');
 
-                if (window.location.href.includes('view=page3')) {
-                    p1.style.display = 'none'; p2.style.display = 'none';
-                } else {
-                    p3.style.display = 'none';
-                }
-            } catch (err) { alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.'); }
-        }
+const filename = document.getElementById('cNo').value || 'certificate';
+
+p1.style.display = 'block';
+p2.style.display = 'block';
+p3.style.display = 'block';
+
+await new Promise(resolve => setTimeout(resolve, 500));
+
+const opts = {
+    scale: 5,
+    useCORS: true,
+    logging: false,
+    backgroundColor: '#ffffff'
+};
+
+try {
+
+    const c1 = await html2canvas(p1, opts);
+    pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
+
+    pdf.addPage();
+
+    const c2 = await html2canvas(p2, opts);
+    pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
+
+    pdf.addPage();
+
+    const c3 = await html2canvas(p3, opts);
+    pdf.addImage(c3.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
+
+    pdf.save('Balady_Final_Form_' + filename + '.pdf');
+
+    if (window.location.href.includes('view=page3')) {
+        p1.style.display = 'none';
+        p2.style.display = 'none';
+    } else {
+        p3.style.display = 'none';
+    }
+
+} catch (err) {
+    console.error(err);
+    alert('حدث خطأ أثناء إنشاء PDF');
+}
+
+}
     </script>
 </body>
 </html>
