@@ -18,7 +18,7 @@
             --text-gray: #7a7a7a;
             --line-color: #cccccc;
         }
-
+ 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background-color: #f5f7fa; padding: 20px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
 
@@ -130,7 +130,7 @@
         <div class="card-page third-page-balady" id="page3">
             <div class="header-image-container"><img id="outHeaderImg3" class="header-uploaded-img" src=""></div>
             <div class="balady-avatar-center-wrapper"><div class="balady-avatar-center"><img id="outUserImg3" src=""></div></div>
-            <div class="balady-green-title">شهادة صحية  </div>
+            <div class="balady-green-title"text-align=center >شهادة صحية  </div>
             <div class="balady-main-card">
                 <div class="balady-group-label">بيانات الشهادة  :</div>
                 <div class="balady-row"><span class="balady-item-name">رقم الشهادة</span><span class="balady-item-value" id="vCertNo"></span></div>
@@ -277,14 +277,14 @@
                                 cFacLic: cFacLic
                             });
 
+                            // ملاحظة: روابط الباركود لها حد أقصى للحروف، يفضل رفع الصور على سيرفر إذا كانت أحجامها ضخمة، ولكن لتعمل محلياً سنمرر الرابط الشامل
                             const liveTrackingUrl = window.location.origin + window.location.pathname + "?" + params.toString();
                             
-                            // التعديل الوحيد هنا: رفع مستوى تصحيح الأخطاء لـ H لضمان عدم تلف الكود مع البيانات الكبيرة
                             new QRCode(document.getElementById("outQrImg"), { 
                                 text: liveTrackingUrl, 
                                 width: 115, 
                                 height: 115, 
-                                correctLevel: QRCode.CorrectLevel.H
+                                correctLevel: QRCode.CorrectLevel.L // تم تقليل مستوى الأخطاء ليتسع الرابط الطويل بكفاءة
                             });
 
                             document.getElementById('inputFormContainer').style.display = 'none';
