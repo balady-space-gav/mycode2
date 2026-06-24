@@ -29,7 +29,7 @@
         .form-group { margin-bottom: 10px; }
         .form-group.full-width { grid-column: span 2; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #cccccc; border-radius: 6px; font-size: 14px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #cccccc; border-radius: 6px; font-size: 14px; background-color: #ffffff; }
         .btn-submit { background-color: var(--balady-green); color: white; border: none; padding: 14px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; margin-top: 15px; }
 
         .preview-wrapper { display: none; width: 440px; }
@@ -84,15 +84,52 @@
                 <div class="form-group"><label>الصورة الشخصية لطالب :</label><input type="file" id="inUserImg" accept="image/*" required></div>
                 <div class="form-group"><label>رقم الشهادة:</label><input type="text" id="cNo" placeholder="26069-1447" required></div>
                 <div class="form-group"><label>مكان الإصدار:</label><input type="text" id="cPlace" placeholder=" " required></div>
-                <div class="form-group"><label>تاريخ الإصدار:</label><input type="text" id="cIssueDate" placeholder="1447/12/21" required></div>
-                <div class="form-group"><label>نهاية الصلاحية:</label><input type="text" id="cExpiryDate" placeholder="1448/12/21" required></div>
+                
+                <div class="form-group"><label>تاريخ الإصدار:</label><input type="date" id="cIssueDate" required></div>
+                <div class="form-group"><label>نهاية الصلاحية:</label><input type="date" id="cExpiryDate" required></div>
+                
                 <div class="form-group full-width"><label>الاسم الكامل لطالب :</label><input type="text" id="cName" placeholder="MD IQBAL HOSSAIN" required></div>
                 <div class="form-group"><label>رقم الهوية للاب / الإقامة:</label><input type="text" id="cIdNo" placeholder="2500113531" required></div>
-                <div class="form-group"><label>الجنس:</label><input type="text" id="cGender" placeholder="ذكر" required></div>
-                <div class="form-group"><label>الجنسية:</label><input type="text" id="cNat" placeholder="سعودي " required></div>
+                
+                <div class="form-group"><label>الجنس:</label>
+                    <select id="cGender" required>
+                        <option value="" disabled selected>اختر الجنس</option>
+                        <option value="ذكر">ذكر</option>
+                        <option value="أنثى">أنثى</option>
+                    </select>
+                </div>
+                
+                <div class="form-group"><label>الجنسية:</label>
+                    <select id="cNat" required>
+                        <option value="" disabled selected>اختر الجنسية</option>
+                        <option value="سعودي">سعودي</option>
+                        <option value="مصر">مصر</option>
+                        <option value="اليمن">اليمن</option>
+                        <option value="الإمارات">الإمارات</option>
+                        <option value="الكويت">الكويت</option>
+                        <option value="قطر">قطر</option>
+                        <option value="عُمان">عُمان</option>
+                        <option value="البحرين">البحرين</option>
+                        <option value="الأردن">الأردن</option>
+                        <option value="سوريا">سوريا</option>
+                        <option value="لبنان">لبنان</option>
+                        <option value="فلسطين">فلسطين</option>
+                        <option value="العراق">العراق</option>
+                        <option value="المغرب">المغرب</option>
+                        <option value="الجزائر">الجزائر</option>
+                        <option value="تونس">تونس</option>
+                        <option value="السودان">السودان</option>
+                        <option value="باكستان">باكستان</option>
+                        <option value="الهند">الهند</option>
+                        <option value="بنجلاديش">بنجلاديش</option>
+                    </select>
+                </div>
+                
                 <div class="form-group"><label>المهنة الاب :</label><input type="text" id="cJob" placeholder="مدير " required></div>
                 <div class="form-group"><label>البرنامج المدرسي :</label><input type="text" id="cProg" placeholder="منشآت مدرسية " required></div>
-                <div class="form-group"><label>تاريخ انتهاء :</label><input type="text" id="cProgExp" placeholder="1450/12/28" required></div>
+                
+                <div class="form-group"><label>تاريخ انتهاء البرنامج:</label><input type="date" id="cProgExp" required></div>
+                
                 <div class="form-group full-width"><label>اسم المدرسة :</label><input type="text" id="cFacName" placeholder=" " required></div>
                 <div class="form-group full-width"><label>رقم رخصة المدرسة :</label><input type="text" id="cFacLic" placeholder="43058039930" required></div>
             </div>
@@ -156,13 +193,11 @@
     </div>
 
     <script>
-        // دالة لاستخراج متغيرات الرابط (URL Parameters)
         function getUrlParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param) || "";
         }
 
-        // التعامل مع رابط الـ QR عند فتحه وفك التشفير وعرض البيانات
         window.addEventListener('DOMContentLoaded', () => {
             if (getUrlParam('view') === 'page3') {
                 document.getElementById('inputFormContainer').style.display = 'none';
@@ -171,7 +206,6 @@
                 document.getElementById('page2').style.display = 'none';
                 document.getElementById('page3').style.display = 'block';
 
-                // تعبئة البيانات الآتية من الباركود في الصفحة 3 مباشرة
                 document.getElementById('vCertNo').innerText = getUrlParam('cNo');
                 document.getElementById('vIssueDate').innerText = getUrlParam('cIssueDate');
                 document.getElementById('vExpiryDate').innerText = getUrlParam('cExpiryDate');
@@ -185,7 +219,6 @@
                 document.getElementById('vFacName').innerText = getUrlParam('cFacName');
                 document.getElementById('vFacLic').innerText = getUrlParam('cFacLic');
 
-                // استرجاع الصور المخزنة مؤقتاً في الرابط إن وجدت
                 if(getUrlParam('hImg')) document.getElementById('outHeaderImg3').src = getUrlParam('hImg');
                 if(getUrlParam('uImg')) document.getElementById('outUserImg3').src = getUrlParam('uImg');
             }
@@ -208,7 +241,6 @@
             const cFacName = document.getElementById('cFacName').value;
             const cFacLic = document.getElementById('cFacLic').value;
 
-            // تحديث واجهة العرض المحلية (Preview)
             document.getElementById('lCertNo').innerText = cNo;
             document.getElementById('lCertPlace').innerText = cPlace;
             document.getElementById('lExpiryDate').innerText = cExpiryDate;
@@ -231,7 +263,6 @@
             document.getElementById('vFacName').innerText = cFacName;
             document.getElementById('vFacLic').innerText = cFacLic;
 
-            // تجهيز وقراءة الصور أولاً
             const mapping = [
                 { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3' },
                 { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3' }
@@ -254,10 +285,8 @@
 
                         loadedCount++;
                         if(loadedCount === 2) {
-                            // تم تحميل كافة الصور، الآن ننشئ الرابط الشامل للبيانات والباركود
                             document.getElementById("outQrImg").innerHTML = "";
                             
-                            // تشفير القيم لضمان سلامتها داخل الرابط وحل مشكلة المسافات واللغة العربية
                             const params = new URLSearchParams({
                                 view: 'page3',
                                 cNo: cNo,
@@ -275,14 +304,13 @@
                                 cFacLic: cFacLic
                             });
 
-                            // ملاحظة: روابط الباركود لها حد أقصى للحروف، يفضل رفع الصور على سيرفر إذا كانت أحجامها ضخمة، ولكن لتعمل محلياً سنمرر الرابط الشامل
                             const liveTrackingUrl = window.location.origin + window.location.pathname + "?" + params.toString();
                             
                             new QRCode(document.getElementById("outQrImg"), { 
                                 text: liveTrackingUrl, 
                                 width: 115, 
                                 height: 115, 
-                                correctLevel: QRCode.CorrectLevel.L // تم تقليل مستوى الأخطاء ليتسع الرابط الطويل بكفاءة
+                                correctLevel: QRCode.CorrectLevel.L
                             });
 
                             document.getElementById('inputFormContainer').style.display = 'none';
