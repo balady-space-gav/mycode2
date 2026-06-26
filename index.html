@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الشهادات الصحية  المطور</title>
+    <title>نظام الشهادات الصحية المطور</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
@@ -31,7 +34,6 @@
         .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
         .form-group input { width: 100%; padding: 10px; border: 1px solid #cccccc; border-radius: 6px; font-size: 14px; }
         .btn-submit { background-color: var(--balady-green); color: white; border: none; padding: 14px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; margin-top: 15px; }
-        .btn-submit:disabled { background-color: #cccccc; cursor: not-allowed; }
 
         .preview-wrapper { display: none; width: 440px; }
         .card-page { background: #ffffff; width: 440px; height: 630px; padding: 25px 35px; border: 1px solid #dcdcdc; margin-bottom: 20px; overflow: hidden; position: relative; }
@@ -81,22 +83,22 @@
         <form id="certForm" onsubmit="processForm(event)">
             <div class="form-grid">
                 <div class="form-group"><label>صورة الشعار (الهيدر):</label><input type="file" id="inHeaderImg" accept="image/*" required></div>
-                <div class="form-group"><label>الصورة الشخصية للعامل  :</label><input type="file" id="inUserImg" accept="image/*" required></div>
+                <div class="form-group"><label>الصورة الشخصية للعامل :</label><input type="file" id="inUserImg" accept="image/*" required></div>
                 <div class="form-group"><label>رقم الشهادة:</label><input type="text" id="cNo" placeholder="26069-1447" required></div>
-                <div class="form-group"><label>مكان الإصدار:</label><input type="text" id="cPlace" placeholder=" " required></div>
+                <div class="form-group"><label>مكان الإصدار:</label><input type="text" id="cPlace" placeholder="الرياض" required></div>
                 <div class="form-group"><label>تاريخ الإصدار:</label><input type="text" id="cIssueDate" placeholder="1447/12/21" required></div>
                 <div class="form-group"><label>نهاية الصلاحية:</label><input type="text" id="cExpiryDate" placeholder="1448/12/21" required></div>
                 <div class="form-group full-width"><label>الاسم الكامل لطالب :</label><input type="text" id="cName" placeholder="MD IQBAL HOSSAIN" required></div>
-                <div class="form-group"><label>رقم الهوية  / :</label><input type="text" id="cIdNo" placeholder="2500113531" required></div>
+                <div class="form-group"><label>رقم الهوية / الإقامة:</label><input type="text" id="cIdNo" placeholder="2500113531" required></div>
                 <div class="form-group"><label>الجنس:</label><input type="text" id="cGender" placeholder="ذكر" required></div>
-                <div class="form-group"><label>الجنسية:</label><input type="text" id="cNat" placeholder="يمني " required></div>
-                <div class="form-group"><label>المهنة  :</label><input type="text" id="cJob" placeholder="عامل " required></div>
-                <div class="form-group"><label>البرنامج التثقيفي  :</label><input type="text" id="cProg" placeholder="اسم المنشاة   " required></div>
-                <div class="form-group"><label>تاريخ انتهاء البرنامج  :</label><input type="text" id="cProgExp" placeholder="1450/12/28" required></div>
-                <div class="form-group full-width"><label>اسم المنشاة  :</label><input type="text" id="cFacName" placeholder=" " required></div>
-                <div class="form-group full-width"><label>رقم رخصة المنشاة  :</label><input type="text" id="cFacLic" placeholder="43058039930" required></div>
+                <div class="form-group"><label>الجنسية:</label><input type="text" id="cNat" placeholder="يمني" required></div>
+                <div class="form-group"><label>المهنة :</label><input type="text" id="cJob" placeholder="عامل" required></div>
+                <div class="form-group"><label>البرنامج التثقيفي :</label><input type="text" id="cProg" placeholder="اسم المنشاة" required></div>
+                <div class="form-group"><label>تاريخ انتهاء البرنامج :</label><input type="text" id="cProgExp" placeholder="1450/12/28" required></div>
+                <div class="form-group full-width"><label>اسم المنشاة :</label><input type="text" id="cFacName" required></div>
+                <div class="form-group full-width"><label>رقم رخصة المنشاة :</label><input type="text" id="cFacLic" placeholder="43058039930" required></div>
             </div>
-            <button type="submit" id="submitBtn" class="btn-submit">توليد ومعاينة الشهادة</button>
+            <button type="submit" class="btn-submit">توليد ومعاينة الشهادة</button>
         </form>
     </div>
 
@@ -130,9 +132,9 @@
         <div class="card-page third-page-balady" id="page3">
             <div class="header-image-container"><img id="outHeaderImg3" class="header-uploaded-img" src=""></div>
             <div class="balady-avatar-center-wrapper"><div class="balady-avatar-center"><img id="outUserImg3" src=""></div></div>
-            <div class="balady-green-title">شهادة صحية  </div>
+            <div class="balady-green-title">شهادة صحية </div>
             <div class="balady-main-card">
-                <div class="balady-group-label">بيانات الشهادة  :</div>
+                <div class="balady-group-label">بيانات الشهادة :</div>
                 <div class="balady-row"><span class="balady-item-name">رقم الشهادة</span><span class="balady-item-value" id="vCertNo"></span></div>
                 <div class="balady-row"><span class="balady-item-name">تاريخ الإصدار</span><span class="balady-item-value" id="vIssueDate"></span></div>
                 <div class="balady-row"><span class="balady-item-name">نهاية الصلاحية</span><span class="balady-item-value" id="vExpiryDate"></span></div>
@@ -143,12 +145,12 @@
                 <div class="balady-row"><span class="balady-item-name">الجنس</span><span class="balady-item-value" id="vGender"></span></div>
                 <div class="balady-row"><span class="balady-item-name">الجنسية</span><span class="balady-item-value" id="vNat"></span></div>
                 <div class="balady-row"><span class="balady-item-name">المهنة</span><span class="balady-item-value" id="vJob"></span></div>
-                <div class="balady-row"><span class="balady-item-name">البرنامج التثقيفي  </span><span class="balady-item-value" id="vProg"></span></div>
+                <div class="balady-row"><span class="balady-item-name">البرنامج التثقيفي </span><span class="balady-item-value" id="vProg"></span></div>
                 <div class="balady-row"><span class="balady-item-name">تاريخ انتهاء البرنامج</span><span class="balady-item-value" id="vProgExp"></span></div>
                 <div class="balady-separator"></div>
-                <div class="balady-group-label">بيانات المنشاة  :</div>
-                <div class="balady-row"><span class="balady-item-name">اسم المنشاة  </span><span class="balady-item-value" id="vFacName"></span></div>
-                <div class="balady-row"><span class="balady-item-name">رقم رخصة المنشاة  </span><span class="balady-item-value" id="vFacLic"></span></div>
+                <div class="balady-group-label">بيانات المنشاة :</div>
+                <div class="balady-row"><span class="balady-item-name">اسم المنشاة </span><span class="balady-item-value" id="vFacName"></span></div>
+                <div class="balady-row"><span class="balady-item-name">رقم رخصة المنشاة </span><span class="balady-item-value" id="vFacLic"></span></div>
             </div>
         </div>
     </div>
@@ -158,63 +160,67 @@
     </div>
 
     <script>
+        // إعداد وتهيئة مفاتيح Firebase لمشروع balady-system الخاص بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUkkVexi69dZZYSeJF4rFuTz18Q350ZoY",
+            authDomain: "balady-system-3f9f9.firebaseapp.com",
+            databaseURL: "https://balady-system-3f9f9-default-rtdb.firebaseio.com",
+            projectId: "balady-system-3f9f9",
+            storageBucket: "balady-system-3f9f9.firebasestorage.app",
+            messagingSenderId: "62607909624",
+            appId: "1:62607909624:web:a69fd3919d6047c35d9d0d",
+            measurementId: "G-KKV2ZNGE7H"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         function getUrlParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param) || "";
         }
 
-        // دالة مخصصة لرفع الصور سحابياً بشكل مؤقت ومجاني ومباشر دون التأثير على حجم الـ QR
-        async function uploadImageToCloud(file) {
-            const formData = new FormData();
-            formData.append('image', file);
-            try {
-                // استخدام سيرفر رفع حر ومفتوح لإنتاج رابط مباشر للصورة
-                const response = await fetch('https://api.imgbb.com/1/upload?key=6d8fd3a81f33f67586fa5113db2d8804', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-                return result.data.url;
-            } catch (error) {
-                console.error("خطأ في رفع الصورة، سيتم استخدام النسخة المحلية:", error);
-                return "";
-            }
-        }
-
+        // رصد عملية الفتح من الجوال وجلب البيانات لحظياً من السيرفر بمجرد التعرف على المعرّف
         window.addEventListener('DOMContentLoaded', () => {
-            if (getUrlParam('view') === 'page3') {
+            const certId = getUrlParam('id');
+            if (certId) {
                 document.getElementById('inputFormContainer').style.display = 'none';
                 document.getElementById('previewWrapper').style.display = 'block';
                 document.getElementById('page1').style.display = 'none';
                 document.getElementById('page2').style.display = 'none';
                 document.getElementById('page3').style.display = 'block';
 
-                // فك التشفير وعرض كل البيانات النصية والروابط مباشرة على أي جوال يمسح الكود
-                document.getElementById('vCertNo').innerText = decodeURIComponent(getUrlParam('cNo'));
-                document.getElementById('vIssueDate').innerText = decodeURIComponent(getUrlParam('cIssueDate'));
-                document.getElementById('vExpiryDate').innerText = decodeURIComponent(getUrlParam('cExpiryDate'));
-                document.getElementById('vName').innerText = decodeURIComponent(getUrlParam('cName'));
-                document.getElementById('vIdNo').innerText = decodeURIComponent(getUrlParam('cIdNo'));
-                document.getElementById('vGender').innerText = decodeURIComponent(getUrlParam('cGender'));
-                document.getElementById('vNat').innerText = decodeURIComponent(getUrlParam('cNat'));
-                document.getElementById('vJob').innerText = decodeURIComponent(getUrlParam('cJob'));
-                document.getElementById('vProg').innerText = decodeURIComponent(getUrlParam('cProg'));
-                document.getElementById('vProgExp').innerText = decodeURIComponent(getUrlParam('cProgExp'));
-                document.getElementById('vFacName').innerText = decodeURIComponent(getUrlParam('cFacName'));
-                document.getElementById('vFacLic').innerText = decodeURIComponent(getUrlParam('cFacLic'));
+                // سحب البيانات حية من قاعدة بيانات Firebase وعرضها فوراً
+                database.ref('certificates/' + certId).once('value').then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        document.getElementById('vCertNo').innerText = data.cNo;
+                        document.getElementById('vIssueDate').innerText = data.cIssueDate;
+                        document.getElementById('vExpiryDate').innerText = data.cExpiryDate;
+                        document.getElementById('vName').innerText = data.cName;
+                        document.getElementById('vIdNo').innerText = data.cIdNo;
+                        document.getElementById('vGender').innerText = data.cGender;
+                        document.getElementById('vNat').innerText = data.cNat;
+                        document.getElementById('vJob').innerText = data.cJob;
+                        document.getElementById('vProg').innerText = data.cProg;
+                        document.getElementById('vProgExp').innerText = data.cProgExp;
+                        document.getElementById('vFacName').innerText = data.cFacName;
+                        document.getElementById('vFacLic').innerText = data.cFacLic;
 
-                if(getUrlParam('hImg')) document.getElementById('outHeaderImg3').src = getUrlParam('hImg');
-                if(getUrlParam('uImg')) document.getElementById('outUserImg3').src = getUrlParam('uImg');
+                        if(data.hImg) document.getElementById('outHeaderImg3').src = data.hImg;
+                        if(data.uImg) document.getElementById('outUserImg3').src = data.uImg;
+                    } else {
+                        alert("تنبيه: الشهادة المطلوبة غير متوفرة أو تم إلغاؤها من السيرفر الرئيسي.");
+                    }
+                }).catch(err => {
+                    console.error("خطأ أثناء استدعاء السيرفر: ", err);
+                });
             }
         });
 
-        async function processForm(event) {
+        function processForm(event) {
             event.preventDefault();
             
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.innerText = "جاري معالجة ورفع الصور سحابياً...";
-            submitBtn.disabled = true;
-
             const cNo = document.getElementById('cNo').value;
             const cPlace = document.getElementById('cPlace').value;
             const cExpiryDate = document.getElementById('cExpiryDate').value;
@@ -229,7 +235,6 @@
             const cFacName = document.getElementById('cFacName').value;
             const cFacLic = document.getElementById('cFacLic').value;
 
-            // تحديث واجهة العرض الحالية
             document.getElementById('lCertNo').innerText = cNo;
             document.getElementById('lCertPlace').innerText = cPlace;
             document.getElementById('lExpiryDate').innerText = cExpiryDate;
@@ -238,66 +243,79 @@
             document.getElementById('lGender').innerText = cGender;
             document.getElementById('lNat').innerText = cNat;
             document.getElementById('lJob').innerText = cJob;
+        
+            document.getElementById('vCertNo').innerText = cNo;
+            document.getElementById('vIssueDate').innerText = cIssueDate;
+            document.getElementById('vExpiryDate').innerText = cExpiryDate;
+            document.getElementById('vName').innerText = cName;
+            document.getElementById('vIdNo').innerText = cIdNo;
+            document.getElementById('vGender').innerText = cGender;
+            document.getElementById('vNat').innerText = cNat;
+            document.getElementById('vJob').innerText = cJob;
+            document.getElementById('vProg').innerText = cProg;
+            document.getElementById('vProgExp').innerText = cProgExp;
+            document.getElementById('vFacName').innerText = cFacName;
+            document.getElementById('vFacLic').innerText = cFacLic;
 
-            const headerFile = document.getElementById('inHeaderImg').files[0];
-            const userFile = document.getElementById('inUserImg').files[0];
+            const mapping = [
+                { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3' },
+                { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3' }
+            ];
 
-            // رفع الصور والحصول على روابط قصيرة خفيفة لا تملأ الباركود
-            const cloudHeaderUrl = await uploadImageToCloud(headerFile);
-            const cloudUserUrl = await uploadImageToCloud(userFile);
+            let loadedCount = 0;
+            let headerBase64 = "";
+            let userBase64 = "";
 
-            // عرض الصور محلياً للمعاينة
-            if(headerFile) {
-                const r1 = new FileReader();
-                r1.onload = (e) => { document.getElementById('outHeaderImg1').src = e.target.result; };
-                r1.readAsDataURL(headerFile);
-            }
-            if(userFile) {
-                const r2 = new FileReader();
-                r2.onload = (e) => { document.getElementById('outUserImg1').src = e.target.result; };
-                r2.readAsDataURL(userFile);
-            }
+            mapping.forEach(item => {
+                const file = document.getElementById(item.input).files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        if(item.view1) document.getElementById(item.view1).src = e.target.result;
+                        if(item.view3) document.getElementById(item.view3).src = e.target.result;
+                        
+                        if(item.input === 'inHeaderImg') headerBase64 = e.target.result;
+                        if(item.input === 'inUserImg') userBase64 = e.target.result;
 
-            document.getElementById("outQrImg").innerHTML = "";
-            
-            // تجميع وتمرير البيانات النصية مع روابط الصور السحابية خفيفة الوزن
-            const params = new URLSearchParams({
-                view: 'page3',
-                cNo: encodeURIComponent(cNo),
-                cPlace: encodeURIComponent(cPlace),
-                cExpiryDate: encodeURIComponent(cExpiryDate),
-                cName: encodeURIComponent(cName),
-                cIdNo: encodeURIComponent(cIdNo),
-                cGender: encodeURIComponent(cGender),
-                cNat: encodeURIComponent(cNat),
-                cJob: encodeURIComponent(cJob),
-                cIssueDate: encodeURIComponent(cIssueDate),
-                cProg: encodeURIComponent(cProg),
-                cProgExp: encodeURIComponent(cProgExp),
-                cFacName: encodeURIComponent(cFacName),
-                cFacLic: encodeURIComponent(cFacLic),
-                hImg: cloudHeaderUrl,
-                uImg: cloudUserUrl
+                        loadedCount++;
+                        if(loadedCount === 2) {
+                            
+                            // إعداد الرابط الذكي الموجه للسيرفر برقم الهوية الفريد
+                            const liveTrackingUrl = window.location.origin + window.location.pathname + "?id=" + cIdNo;
+                            
+                            // رفع البيانات كاملة بشكل فوري إلى السيرفر الرئيسي
+                            database.ref('certificates/' + cIdNo).set({
+                                cNo: cNo, cPlace: cPlace, cExpiryDate: cExpiryDate, cName: cName,
+                                cIdNo: cIdNo, cGender: cGender, cNat: cNat, cJob: cJob,
+                                cIssueDate: cIssueDate, cProg: cProg, cProgExp: cProgExp,
+                                cFacName: cFacName, cFacLic: cFacLic,
+                                hImg: headerBase64, uImg: userBase64,
+                                timestamp: Date.now()
+                            }).then(() => {
+                                console.log("تم المزامنة وحفظ الشهادة بنجاح في قاعدة البيانات!");
+                            }).catch(err => {
+                                alert("خطأ في الاتصال بقاعدة البيانات، يرجى مراجعة الصلاحيات.");
+                            });
+
+                            document.getElementById("outQrImg").innerHTML = "";
+                            new QRCode(document.getElementById("outQrImg"), { 
+                                text: liveTrackingUrl, 
+                                width: 115, 
+                                height: 115, 
+                                correctLevel: QRCode.CorrectLevel.M
+                            });
+
+                            document.getElementById('inputFormContainer').style.display = 'none';
+                            document.getElementById('previewWrapper').style.display = 'block';
+                            document.getElementById('page1').style.display = 'block';
+                            document.getElementById('page2').style.display = 'block';
+                            document.getElementById('page3').style.display = 'none'; 
+                            document.getElementById('controlPanel').style.display = 'block';
+                        }
+                    }
+                    reader.readAsDataURL(file);
+                }
             });
-
-            const liveTrackingUrl = window.location.origin + window.location.pathname + "?" + params.toString();
-            
-            new QRCode(document.getElementById("outQrImg"), { 
-                text: liveTrackingUrl, 
-                width: 115, 
-                height: 115, 
-                correctLevel: QRCode.CorrectLevel.L
-            });
-
-            submitBtn.innerText = "توليد ومعاينة الشهادة";
-            submitBtn.disabled = false;
-
-            document.getElementById('inputFormContainer').style.display = 'none';
-            document.getElementById('previewWrapper').style.display = 'block';
-            document.getElementById('page1').style.display = 'block';
-            document.getElementById('page2').style.display = 'block';
-            document.getElementById('page3').style.display = 'none'; 
-            document.getElementById('controlPanel').style.display = 'block';
         }
 
         async function buildAbsolutePDF() {
@@ -317,7 +335,7 @@
                 const c3 = await html2canvas(p3, opts); pdf.addImage(c3.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
                 pdf.save('Balady_Final_Form_' + filename + '.pdf');
 
-                if (window.location.href.includes('view=page3')) {
+                if (window.location.href.includes('id=')) {
                     p1.style.display = 'none'; p2.style.display = 'none';
                 } else {
                     p3.style.display = 'none';
