@@ -255,7 +255,6 @@
 
         async function buildAbsolutePDF() {
             const { jsPDF } = window.jspdf;
-            // إنشاء مستند الـ PDF
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [116, 166] });
             const p1 = document.getElementById('page1'), p2 = document.getElementById('page2');
             const filename = document.getElementById('cNo').value;
@@ -264,18 +263,10 @@
             const opts = { scale: 4, useCORS: true, logging: false, backgroundColor: '#ffffff' };
 
             try {
-                // سحب وطباعة الصفحة الأولى فقط (البيانات والصور)
-                const c1 = await html2canvas(p1, opts); 
-                pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-                
-                // إضافة صفحة ثانية للمستند
+                const c1 = await html2canvas(p1, opts); pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
                 pdf.addPage([116, 166], 'portrait');
+                const c2 = await html2canvas(p2, opts); pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
                 
-                // سحب وطباعة الصفحة الثانية فقط (التعليمات)
-                const c2 = await html2canvas(p2, opts); 
-                pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-                
-                // حفظ وحفظ الملف النهائي بصفحتين فقط!
                 pdf.save('balady.space_Form_' + filename + '.pdf');
             } catch (err) { 
                 alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.'); 
