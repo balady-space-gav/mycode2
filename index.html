@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الشهادات الصحية المطور</title>
+    <title>balady.space</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -79,7 +79,7 @@
 <body>
 
     <div class="form-container" id="inputFormContainer">
-        <h2>نظام طباعة الشهادات المطور</h2>
+        <h2>نظام الشهادات الصحية المطور</h2>
         <form id="certForm" onsubmit="processForm(event)">
             <div class="form-grid">
                 <div class="form-group"><label>صورة الشعار (الهيدر):</label><input type="file" id="inHeaderImg" accept="image/*" required></div>
@@ -132,7 +132,7 @@
         <div class="card-page third-page-balady" id="page3">
             <div class="header-image-container"><img id="outHeaderImg3" class="header-uploaded-img" src=""></div>
             <div class="balady-avatar-center-wrapper"><div class="balady-avatar-center"><img id="outUserImg3" src=""></div></div>
-          <div class="title-badge">شهادة صحية </div>
+            <div class="title-badge">شهادة صحية </div>
             <div class="balady-main-card">
                 <div class="balady-group-label">بيانات الشهادة :</div>
                 <div class="balady-row"><span class="balady-item-name">رقم الشهادة</span><span class="balady-item-value" id="vCertNo"></span></div>
@@ -160,7 +160,6 @@
     </div>
 
     <script>
-        // إعداد وتهيئة مفاتيح Firebase لمشروع balady-system الخاص بك
         const firebaseConfig = {
             apiKey: "AIzaSyCUkkVexi69dZZYSeJF4rFuTz18Q350ZoY",
             authDomain: "balady-system-3f9f9.firebaseapp.com",
@@ -180,7 +179,6 @@
             return urlParams.get(param) || "";
         }
 
-        // رصد عملية الفتح من الجوال وجلب البيانات لحظياً من السيرفر بمجرد التعرف على المعرّف
         window.addEventListener('DOMContentLoaded', () => {
             const certId = getUrlParam('id');
             if (certId) {
@@ -190,7 +188,6 @@
                 document.getElementById('page2').style.display = 'none';
                 document.getElementById('page3').style.display = 'block';
 
-                // سحب البيانات حية من قاعدة بيانات Firebase وعرضها فوراً
                 database.ref('certificates/' + certId).once('value').then((snapshot) => {
                     if (snapshot.exists()) {
                         const data = snapshot.val();
@@ -279,11 +276,9 @@
 
                         loadedCount++;
                         if(loadedCount === 2) {
-                            
-                            // إعداد الرابط الذكي الموجه للسيرفر برقم الهوية الفريد
+                            // توليد الرابط بناءً على نطاق الموقع الحالي
                             const liveTrackingUrl = window.location.origin + window.location.pathname + "?id=" + cIdNo;
                             
-                            // رفع البيانات كاملة بشكل فوري إلى السيرفر الرئيسي
                             database.ref('certificates/' + cIdNo).set({
                                 cNo: cNo, cPlace: cPlace, cExpiryDate: cExpiryDate, cName: cName,
                                 cIdNo: cIdNo, cGender: cGender, cNat: cNat, cJob: cJob,
@@ -333,7 +328,7 @@
                 const c2 = await html2canvas(p2, opts); pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
                 pdf.addPage([116, 166], 'portrait');
                 const c3 = await html2canvas(p3, opts); pdf.addImage(c3.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-                pdf.save('Balady_Final_Form_' + filename + '.pdf');
+                pdf.save('balady.space_Form_' + filename + '.pdf');
 
                 if (window.location.href.includes('id=')) {
                     p1.style.display = 'none'; p2.style.display = 'none';
