@@ -38,8 +38,6 @@
         .preview-wrapper { display: none; width: 440px; }
         .card-page { background: #ffffff; width: 440px; height: 630px; padding: 25px 35px; border: 1px solid #dcdcdc; margin-bottom: 20px; overflow: hidden; position: relative; }
         
-        #page3 { display: none; }
-
         .header-image-container { width: 100%; height: 70px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
         .header-uploaded-img { width: 120%; height: 150%; object-fit: contain; }
         .images-section { display: flex; justify-content: flex-start; padding-right: 35px; margin-bottom: 10px; gap: 10px; }
@@ -59,18 +57,6 @@
         .terms-list li { margin-bottom: 25px; position: relative; padding-right: 25px; }
         .terms-list li h2 { font-size: 19px; font-weight: 800; display: inline; line-height: 1.5; }
         .terms-list li::before { content: "*"; position: absolute; right: 0; top: 2px; font-weight: bold; font-size: 24px; }
-
-        .third-page-balady { background-color: #fafbfc; padding: 10px 15px; display: flex; flex-direction: column; align-items: center; border: 3px solid var(--balady-green); }
-        .balady-avatar-center-wrapper { width: 80%; display: flex; justify-content: center; margin-bottom: 5px; }
-        .balady-avatar-center { width: 65px; height: 75px; border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .balady-avatar-center img { width: 100%; height: 100%; object-fit: fill; }
-        .balady-green-title { color: var(--balady-green); font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-        .balady-main-card { background: #ffffff; border-radius: 6px; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04); border: 1px solid #ededed; width: 100%; padding: 10px 15px; }
-        .balady-group-label { color: var(--balady-green); font-size: 11px; font-weight: 700; text-align: right; }
-        .balady-row { display: flex; justify-content: space-between; font-size: 12px; }
-        .balady-item-name { color: var(--text-dark); font-weight: 700; width: 40%; }
-        .balady-item-value { color: var(--text-dark); font-weight: 600; width: 60%; }
-        .balady-separator { width: 100%; height: 2px; background-color: var(--line-color); margin: 3px 0; }
 
         .control-panel { display: none; width: 440px; margin-top: 10px; }
         .btn-pdf { background-color: #d32f2f; color: white; border: none; padding: 15px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
@@ -128,31 +114,6 @@
                 <li><h2>للتأكد من سلامة الشهادة يرجى زيارة موقع أمانة منطقة الرياض</h2></li>
             </ul>
         </div>
-
-        <div class="card-page third-page-balady" id="page3">
-            <div class="header-image-container"><img id="outHeaderImg3" class="header-uploaded-img" src=""></div>
-            <div class="balady-avatar-center-wrapper"><div class="balady-avatar-center"><img id="outUserImg3" src=""></div></div>
-            <div class="title-badge">شهادة صحية </div>
-            <div class="balady-main-card">
-                <div class="balady-group-label">بيانات الشهادة :</div>
-                <div class="balady-row"><span class="balady-item-name">رقم الشهادة</span><span class="balady-item-value" id="vCertNo"></span></div>
-                <div class="balady-row"><span class="balady-item-name">تاريخ الإصدار</span><span class="balady-item-value" id="vIssueDate"></span></div>
-                <div class="balady-row"><span class="balady-item-name">نهاية الصلاحية</span><span class="balady-item-value" id="vExpiryDate"></span></div>
-                <div class="balady-separator"></div>
-                <div class="balady-group-label">بيانات صاحب الشهادة :</div>
-                <div class="balady-row"><span class="balady-item-name">الاسم</span><span class="balady-item-value" id="vName"></span></div>
-                <div class="balady-row"><span class="balady-item-name">رقم الهوية </span><span class="balady-item-value" id="vIdNo"></span></div>
-                <div class="balady-row"><span class="balady-item-name">الجنس</span><span class="balady-item-value" id="vGender"></span></div>
-                <div class="balady-row"><span class="balady-item-name">الجنسية</span><span class="balady-item-value" id="vNat"></span></div>
-                <div class="balady-row"><span class="balady-item-name">المهنة</span><span class="balady-item-value" id="vJob"></span></div>
-                <div class="balady-row"><span class="balady-item-name">البرنامج التثقيفي </span><span class="balady-item-value" id="vProg"></span></div>
-                <div class="balady-row"><span class="balady-item-name">تاريخ انتهاء البرنامج</span><span class="balady-item-value" id="vProgExp"></span></div>
-                <div class="balady-separator"></div>
-                <div class="balady-group-label">بيانات المنشاة :</div>
-                <div class="balady-row"><span class="balady-item-name">اسم المنشاة </span><span class="balady-item-value" id="vFacName"></span></div>
-                <div class="balady-row"><span class="balady-item-name">رقم رخصة المنشاة </span><span class="balady-item-value" id="vFacLic"></span></div>
-            </div>
-        </div>
     </div>
 
     <div class="control-panel" id="controlPanel">
@@ -184,28 +145,23 @@
             if (certId) {
                 document.getElementById('inputFormContainer').style.display = 'none';
                 document.getElementById('previewWrapper').style.display = 'block';
-                document.getElementById('page1').style.display = 'none';
-                document.getElementById('page2').style.display = 'none';
-                document.getElementById('page3').style.display = 'block';
+                document.getElementById('page1').style.display = 'block';
+                document.getElementById('page2').style.display = 'block';
 
                 database.ref('certificates/' + certId).once('value').then((snapshot) => {
                     if (snapshot.exists()) {
                         const data = snapshot.val();
-                        document.getElementById('vCertNo').innerText = data.cNo;
-                        document.getElementById('vIssueDate').innerText = data.cIssueDate;
-                        document.getElementById('vExpiryDate').innerText = data.cExpiryDate;
-                        document.getElementById('vName').innerText = data.cName;
-                        document.getElementById('vIdNo').innerText = data.cIdNo;
-                        document.getElementById('vGender').innerText = data.cGender;
-                        document.getElementById('vNat').innerText = data.cNat;
-                        document.getElementById('vJob').innerText = data.cJob;
-                        document.getElementById('vProg').innerText = data.cProg;
-                        document.getElementById('vProgExp').innerText = data.cProgExp;
-                        document.getElementById('vFacName').innerText = data.cFacName;
-                        document.getElementById('vFacLic').innerText = data.cFacLic;
+                        document.getElementById('lCertNo').innerText = data.cNo;
+                        document.getElementById('lCertPlace').innerText = data.cPlace;
+                        document.getElementById('lExpiryDate').innerText = data.cExpiryDate;
+                        document.getElementById('lName').innerText = data.cName;
+                        document.getElementById('lIdNo').innerText = data.cIdNo;
+                        document.getElementById('lGender').innerText = data.cGender;
+                        document.getElementById('lNat').innerText = data.cNat;
+                        document.getElementById('lJob').innerText = data.cJob;
 
-                        if(data.hImg) document.getElementById('outHeaderImg3').src = data.hImg;
-                        if(data.uImg) document.getElementById('outUserImg3').src = data.uImg;
+                        if(data.hImg) document.getElementById('outHeaderImg1').src = data.hImg;
+                        if(data.uImg) document.getElementById('outUserImg1').src = data.uImg;
                     } else {
                         alert("تنبيه: الشهادة المطلوبة غير متوفرة أو تم إلغاؤها من السيرفر الرئيسي.");
                     }
@@ -241,22 +197,9 @@
             document.getElementById('lNat').innerText = cNat;
             document.getElementById('lJob').innerText = cJob;
         
-            document.getElementById('vCertNo').innerText = cNo;
-            document.getElementById('vIssueDate').innerText = cIssueDate;
-            document.getElementById('vExpiryDate').innerText = cExpiryDate;
-            document.getElementById('vName').innerText = cName;
-            document.getElementById('vIdNo').innerText = cIdNo;
-            document.getElementById('vGender').innerText = cGender;
-            document.getElementById('vNat').innerText = cNat;
-            document.getElementById('vJob').innerText = cJob;
-            document.getElementById('vProg').innerText = cProg;
-            document.getElementById('vProgExp').innerText = cProgExp;
-            document.getElementById('vFacName').innerText = cFacName;
-            document.getElementById('vFacLic').innerText = cFacLic;
-
             const mapping = [
-                { input: 'inHeaderImg', view1: 'outHeaderImg1', view3: 'outHeaderImg3' },
-                { input: 'inUserImg', view1: 'outUserImg1', view3: 'outUserImg3' }
+                { input: 'inHeaderImg', view1: 'outHeaderImg1' },
+                { input: 'inUserImg', view1: 'outUserImg1' }
             ];
 
             let loadedCount = 0;
@@ -269,14 +212,12 @@
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         if(item.view1) document.getElementById(item.view1).src = e.target.result;
-                        if(item.view3) document.getElementById(item.view3).src = e.target.result;
                         
                         if(item.input === 'inHeaderImg') headerBase64 = e.target.result;
                         if(item.input === 'inUserImg') userBase64 = e.target.result;
 
                         loadedCount++;
                         if(loadedCount === 2) {
-                            // توليد الرابط بناءً على نطاق الموقع الحالي
                             const liveTrackingUrl = window.location.origin + window.location.pathname + "?id=" + cIdNo;
                             
                             database.ref('certificates/' + cIdNo).set({
@@ -304,7 +245,6 @@
                             document.getElementById('previewWrapper').style.display = 'block';
                             document.getElementById('page1').style.display = 'block';
                             document.getElementById('page2').style.display = 'block';
-                            document.getElementById('page3').style.display = 'none'; 
                             document.getElementById('controlPanel').style.display = 'block';
                         }
                     }
@@ -316,26 +256,21 @@
         async function buildAbsolutePDF() {
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [116, 166] });
-            const p1 = document.getElementById('page1'), p2 = document.getElementById('page2'), p3 = document.getElementById('page3');
+            const p1 = document.getElementById('page1'), p2 = document.getElementById('page2');
             const filename = document.getElementById('cNo').value;
 
-            p1.style.display = 'block'; p2.style.display = 'block'; p3.style.display = 'block';
+            p1.style.display = 'block'; p2.style.display = 'block';
             const opts = { scale: 4, useCORS: true, logging: false, backgroundColor: '#ffffff' };
 
             try {
                 const c1 = await html2canvas(p1, opts); pdf.addImage(c1.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
                 pdf.addPage([116, 166], 'portrait');
                 const c2 = await html2canvas(p2, opts); pdf.addImage(c2.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
-                pdf.addPage([116, 166], 'portrait');
-                const c3 = await html2canvas(p3, opts); pdf.addImage(c3.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
+                
                 pdf.save('balady.space_Form_' + filename + '.pdf');
-
-                if (window.location.href.includes('id=')) {
-                    p1.style.display = 'none'; p2.style.display = 'none';
-                } else {
-                    p3.style.display = 'none';
-                }
-            } catch (err) { alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.'); }
+            } catch (err) { 
+                alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.'); 
+            }
         }
     </script>
 </body>
