@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الشهادات الصحية - بوابة الاستعلام</title>
+    <title>نظام الشهادات الصحية المطور</title>
     
-    <!-- المكتبات الأساسية -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
@@ -23,7 +25,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background-color: #f5f7fa; padding: 20px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
 
-        /* نموذج إدخال البيانات */
         .form-container { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 650px; margin-bottom: 20px; }
         .form-container h2 { color: var(--balady-green); margin-bottom: 20px; text-align: center; font-weight: 700; border-bottom: 2px solid var(--balady-green); padding-bottom: 10px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -34,13 +35,11 @@
         .form-group input { width: 100%; padding: 10px; border: 1px solid #cccccc; border-radius: 6px; font-size: 14px; }
         .btn-submit { background-color: var(--balady-green); color: white; border: none; padding: 14px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; margin-top: 15px; }
 
-        /* منطقة المعاينة والصفحات */
         .preview-wrapper { display: none; width: 440px; }
         .card-page { background: #ffffff; width: 440px; height: 630px; padding: 25px 35px; border: 1px solid #dcdcdc; margin-bottom: 20px; overflow: hidden; position: relative; }
         
         #page3 { display: none; }
 
-        /* تصميم الصفحة الأولى والثانية */
         .header-image-container { width: 100%; height: 70px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
         .header-uploaded-img { width: 120%; height: 150%; object-fit: contain; }
         .images-section { display: flex; justify-content: flex-start; padding-right: 35px; margin-bottom: 10px; gap: 10px; }
@@ -48,7 +47,6 @@
         .user-photo { object-fit: fill; }
         .qr-photo img { width: 100%; height: 100%; object-fit: contain; }
         .title-badge { text-align: center; color: var(--balady-green); font-size: 26px; font-weight: 700; margin-bottom: 10px; }
-        
         .info-table { width: 100%; border-collapse: collapse; border: 2px solid #666666; font-size: 12px; }
         .info-table td { padding: 8px 5px; vertical-align: middle; }
         .section-divider { border-bottom: 3px solid #666666; background-color: #f9f9f9; }
@@ -62,11 +60,11 @@
         .terms-list li h2 { font-size: 19px; font-weight: 800; display: inline; line-height: 1.5; }
         .terms-list li::before { content: "*"; position: absolute; right: 0; top: 2px; font-weight: bold; font-size: 24px; }
 
-        /* تصميم الصفحة الثالثة (واجهة بلدي للاستعلام المباشر) */
         .third-page-balady { background-color: #fafbfc; padding: 10px 15px; display: flex; flex-direction: column; align-items: center; border: 3px solid var(--balady-green); }
         .balady-avatar-center-wrapper { width: 80%; display: flex; justify-content: center; margin-bottom: 5px; }
         .balady-avatar-center { width: 65px; height: 75px; border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .balady-avatar-center img { width: 100%; height: 100%; object-fit: fill; }
+        .balady-green-title { color: var(--balady-green); font-size: 20px; font-weight: 700; margin-bottom: 8px; }
         .balady-main-card { background: #ffffff; border-radius: 6px; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04); border: 1px solid #ededed; width: 100%; padding: 10px 15px; }
         .balady-group-label { color: var(--balady-green); font-size: 11px; font-weight: 700; text-align: right; }
         .balady-row { display: flex; justify-content: space-between; font-size: 12px; }
@@ -80,9 +78,8 @@
 </head>
 <body>
 
-    <!-- واجهة لوحة التحكم وإدخال البيانات -->
     <div class="form-container" id="inputFormContainer">
-        <h2>نظام إصدار وتوليد الشهادات الصحية</h2>
+        <h2>نظام طباعة الشهادات المدرسية المطور</h2>
         <form id="certForm" onsubmit="processForm(event)">
             <div class="form-grid">
                 <div class="form-group"><label>صورة الشعار (الهيدر):</label><input type="file" id="inHeaderImg" accept="image/*" required></div>
@@ -105,9 +102,7 @@
         </form>
     </div>
 
-    <!-- حاوية الصفحات والشهادات -->
     <div class="preview-wrapper" id="previewWrapper">
-        <!-- الصفحة الأولى وجه -->
         <div class="card-page" id="page1">
             <div class="header-image-container"><img id="outHeaderImg1" class="header-uploaded-img" src=""></div>
             <div class="images-section"><div id="outQrImg" class="qr-photo"></div><img id="outUserImg1" class="user-photo"></div>
@@ -124,7 +119,6 @@
             </table>
         </div>
 
-        <!-- الصفحة الثانية ظهر -->
         <div class="card-page back-page" id="page2">
             <ul class="terms-list">
                 <li><h2>حامل هذه الشهادة حاصل على تقرير طبي يثبت خلوه من الأمراض المعدية وأجريت له التطعيمات التي تخوله للعمل في محلات الأغذية والصحة العامة</h2></li>
@@ -135,11 +129,10 @@
             </ul>
         </div>
 
-        <!-- الصفحة الثالثة صفحة الاستعلام السريع عبر الـ QR (بلدي) -->
         <div class="card-page third-page-balady" id="page3">
             <div class="header-image-container"><img id="outHeaderImg3" class="header-uploaded-img" src=""></div>
             <div class="balady-avatar-center-wrapper"><div class="balady-avatar-center"><img id="outUserImg3" src=""></div></div>
-            <div class="title-badge">شهادة صحية </div>
+          <div class="title-badge">شهادة صحية </div>
             <div class="balady-main-card">
                 <div class="balady-group-label">بيانات الشهادة :</div>
                 <div class="balady-row"><span class="balady-item-name">رقم الشهادة</span><span class="balady-item-value" id="vCertNo"></span></div>
@@ -162,38 +155,45 @@
         </div>
     </div>
 
-    <!-- لوحة التحكم بالـ PDF -->
     <div class="control-panel" id="controlPanel">
         <button class="btn-pdf" onclick="buildAbsolutePDF()">حفظ وتحميل الـ PDF النهائي</button>
     </div>
 
     <script>
+        // إعداد وتهيئة مفاتيح Firebase لمشروع balady-system الخاص بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUkkVexi69dZZYSeJF4rFuTz18Q350ZoY",
+            authDomain: "balady-system-3f9f9.firebaseapp.com",
+            databaseURL: "https://balady-system-3f9f9-default-rtdb.firebaseio.com",
+            projectId: "balady-system-3f9f9",
+            storageBucket: "balady-system-3f9f9.firebasestorage.app",
+            messagingSenderId: "62607909624",
+            appId: "1:62607909624:web:a69fd3919d6047c35d9d0d",
+            measurementId: "G-KKV2ZNGE7H"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         function getUrlParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param) || "";
         }
 
-        // كود الاستعلام الأساسي من قاعدة البيانات عند مسح الـ QR مع تسريع العرض والترتيب غير المتزامن
-        window.addEventListener('DOMContentLoaded', async () => {
+        // رصد عملية الفتح من الجوال وجلب البيانات لحظياً من السيرفر بمجرد التعرف على المعرّف
+        window.addEventListener('DOMContentLoaded', () => {
             const certId = getUrlParam('id');
             if (certId) {
-                // إخفاء الفيرم الرئيسي وإظهار صفحة الاستعلام مباشرة
                 document.getElementById('inputFormContainer').style.display = 'none';
                 document.getElementById('previewWrapper').style.display = 'block';
                 document.getElementById('page1').style.display = 'none';
                 document.getElementById('page2').style.display = 'none';
                 document.getElementById('page3').style.display = 'block';
 
-                // هنا كود الربط الفعلي الخاص بك بقاعدة البيانات (مثل Firebase أو غيرها)
-                // قمنا بتحسينه ليجلب النصوص ويعرضها فوراً، ثم يحمل الصور لاحقاً لتفادي أي تأخير ثانيتين للمستخدم
-                try {
-                    // مثال توضيحي لهيكلة جلب بياناتك السريعة:
-                    // const snapshot = await db.ref('certificates/' + certId).once('value');
-                    // const data = snapshot.val();
-                    
-                    /* 
-                    if(data) {
-                        // تعبئة النصوص فوراً في أجزاء من الثانية
+                // سحب البيانات حية من قاعدة بيانات Firebase وعرضها فوراً
+                database.ref('certificates/' + certId).once('value').then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
                         document.getElementById('vCertNo').innerText = data.cNo;
                         document.getElementById('vIssueDate').innerText = data.cIssueDate;
                         document.getElementById('vExpiryDate').innerText = data.cExpiryDate;
@@ -207,20 +207,17 @@
                         document.getElementById('vFacName').innerText = data.cFacName;
                         document.getElementById('vFacLic').innerText = data.cFacLic;
 
-                        // تحميل الصور في الخلفية حتى لا تؤخر ظهور النصوص والبيانات الأساسية للشهادة
-                        setTimeout(() => {
-                            document.getElementById('outHeaderImg3').src = data.headerImgUrl;
-                            document.getElementById('outUserImg3').src = data.userImgUrl;
-                        }, 50);
+                        if(data.hImg) document.getElementById('outHeaderImg3').src = data.hImg;
+                        if(data.uImg) document.getElementById('outUserImg3').src = data.uImg;
+                    } else {
+                        alert("تنبيه: الشهادة المطلوبة غير متوفرة أو تم إلغاؤها من السيرفر الرئيسي.");
                     }
-                    */
-                } catch(e) {
-                    console.log("خطأ في جلب البيانات السريعة.");
-                }
+                }).catch(err => {
+                    console.error("خطأ أثناء استدعاء السيرفر: ", err);
+                });
             }
         });
 
-        // معالجة النموذج وتوليد باركود الاستعلام التقليدي الأساسي للنظام
         function processForm(event) {
             event.preventDefault();
             
@@ -238,7 +235,6 @@
             const cFacName = document.getElementById('cFacName').value;
             const cFacLic = document.getElementById('cFacLic').value;
 
-            // تعبئة بيانات كروت الطباعة (الوجه والظهر)
             document.getElementById('lCertNo').innerText = cNo;
             document.getElementById('lCertPlace').innerText = cPlace;
             document.getElementById('lExpiryDate').innerText = cExpiryDate;
@@ -248,7 +244,6 @@
             document.getElementById('lNat').innerText = cNat;
             document.getElementById('lJob').innerText = cJob;
         
-            // تعبئة بيانات صفحة بلدي التفاعلية
             document.getElementById('vCertNo').innerText = cNo;
             document.getElementById('vIssueDate').innerText = cIssueDate;
             document.getElementById('vExpiryDate').innerText = cExpiryDate;
@@ -268,6 +263,9 @@
             ];
 
             let loadedCount = 0;
+            let headerBase64 = "";
+            let userBase64 = "";
+
             mapping.forEach(item => {
                 const file = document.getElementById(item.input).files[0];
                 if(file) {
@@ -276,20 +274,40 @@
                         if(item.view1) document.getElementById(item.view1).src = e.target.result;
                         if(item.view3) document.getElementById(item.view3).src = e.target.result;
                         
+                        if(item.input === 'inHeaderImg') headerBase64 = e.target.result;
+                        if(item.input === 'inUserImg') userBase64 = e.target.result;
+
                         loadedCount++;
                         if(loadedCount === 2) {
-                            // توليد رابط الاستعلام التقليدي المعتمد على الـ ID الخاص بالشهادة في السيستم الخاص بك
-                            const liveTrackingUrl = window.location.origin + window.location.pathname + "?id=" + cNo;
+                            
+                            // تعديل ذكي: إنشاء مُعرّف فريد يربط رقم الهوية بالوقت الحالي بالملي ثانية لضمان عدم التكرار مطلقاً
+                            const uniqueCertId = cIdNo + "_" + Date.now();
+                            
+                            // إعداد الرابط الذكي الموجه للسيرفر بالمعرّف الجديد الفريد
+                            const liveTrackingUrl = window.location.origin + window.location.pathname + "?id=" + uniqueCertId;
+                            
+                            // رفع البيانات كاملة تحت السجل الفريد الجديد إلى السيرفر الرئيسي
+                            database.ref('certificates/' + uniqueCertId).set({
+                                cNo: cNo, cPlace: cPlace, cExpiryDate: cExpiryDate, cName: cName,
+                                cIdNo: cIdNo, cGender: cGender, cNat: cNat, cJob: cJob,
+                                cIssueDate: cIssueDate, cProg: cProg, cProgExp: cProgExp,
+                                cFacName: cFacName, cFacLic: cFacLic,
+                                hImg: headerBase64, uImg: userBase64,
+                                timestamp: Date.now()
+                            }).then(() => {
+                                console.log("تم المزامنة وحفظ الشهادة بنجاح في قاعدة البيانات بسجل فريد!");
+                            }).catch(err => {
+                                alert("خطأ في الاتصال بقاعدة البيانات، يرجى مراجعة الصلاحيات.");
+                            });
 
                             document.getElementById("outQrImg").innerHTML = "";
                             new QRCode(document.getElementById("outQrImg"), { 
                                 text: liveTrackingUrl, 
                                 width: 115, 
-                                height: 115,
-                                correctLevel: QRCode.CorrectLevel.H
+                                height: 115, 
+                                correctLevel: QRCode.CorrectLevel.M
                             });
 
-                            // عرض لوحة المعاينة والتحكم
                             document.getElementById('inputFormContainer').style.display = 'none';
                             document.getElementById('previewWrapper').style.display = 'block';
                             document.getElementById('page1').style.display = 'block';
@@ -303,7 +321,6 @@
             });
         }
 
-        // كود سحب وحفظ الـ PDF لثلاث صفحات متتالية وثابتة المقاس بنجاح
         async function buildAbsolutePDF() {
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [116, 166] });
@@ -326,7 +343,7 @@
                 } else {
                     p3.style.display = 'none';
                 }
-            } catch (err) { alert('حدث خطأ أثناء طباعة المستند، يرجى التحقق وإعادة المحاولة.'); }
+            } catch (err) { alert('حدث خطأ أثناء إعداد المستند الإلكتروني، يرجى إعادة المحاولة.'); }
         }
     </script>
 </body>
