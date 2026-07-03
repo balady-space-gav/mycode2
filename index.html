@@ -9,9 +9,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
         
@@ -132,7 +129,7 @@
         <div class="card-page third-page-balady" id="page3">
             <div class="header-image-container"><img id="outHeaderImg3" class="header-uploaded-img" src=""></div>
             <div class="balady-avatar-center-wrapper"><div class="balady-avatar-center"><img id="outUserImg3" src=""></div></div>
-          <div class="title-badge">شهادة صحية </div>
+            <div class="title-badge">شهادة صحية </div>
             <div class="balady-main-card">
                 <div class="balady-group-label">بيانات الشهادة :</div>
                 <div class="balady-row"><span class="balady-item-name">رقم الشهادة</span><span class="balady-item-value" id="vCertNo"></span></div>
@@ -160,61 +157,49 @@
     </div>
 
     <script>
-        // إعداد وتهيئة مفاتيح Firebase لمشروع balady-system الخاص بك
-        const firebaseConfig = {
-            apiKey: "AIzaSyCUkkVexi69dZZYSeJF4rFuTz18Q350ZoY",
-            authDomain: "balady-system-3f9f9.firebaseapp.com",
-            databaseURL: "https://balady-system-3f9f9-default-rtdb.firebaseio.com",
-            projectId: "balady-system-3f9f9",
-            storageBucket: "balady-system-3f9f9.firebasestorage.app",
-            messagingSenderId: "62607909624",
-            appId: "1:62607909624:web:a69fd3919d6047c35d9d0d",
-            measurementId: "G-KKV2ZNGE7H"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
         function getUrlParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param) || "";
         }
 
-        // رصد عملية الفتح من الجوال وجلب البيانات لحظياً من السيرفر بمجرد التعرف على المعرّف
+        // قراءة البيانات من الرابط مباشرة لتعمل في نفس اللحظة بدون تأخير
         window.addEventListener('DOMContentLoaded', () => {
-            const certId = getUrlParam('id');
-            if (certId) {
+            const encodedData = getUrlParam('d');
+            if (encodedData) {
                 document.getElementById('inputFormContainer').style.display = 'none';
                 document.getElementById('previewWrapper').style.display = 'block';
                 document.getElementById('page1').style.display = 'none';
                 document.getElementById('page2').style.display = 'none';
                 document.getElementById('page3').style.display = 'block';
 
-                // سحب البيانات حية من قاعدة بيانات Firebase وعرضها فوراً
-                database.ref('certificates/' + certId).once('value').then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const data = snapshot.val();
-                        document.getElementById('vCertNo').innerText = data.cNo;
-                        document.getElementById('vIssueDate').innerText = data.cIssueDate;
-                        document.getElementById('vExpiryDate').innerText = data.cExpiryDate;
-                        document.getElementById('vName').innerText = data.cName;
-                        document.getElementById('vIdNo').innerText = data.cIdNo;
-                        document.getElementById('vGender').innerText = data.cGender;
-                        document.getElementById('vNat').innerText = data.cNat;
-                        document.getElementById('vJob').innerText = data.cJob;
-                        document.getElementById('vProg').innerText = data.cProg;
-                        document.getElementById('vProgExp').innerText = data.cProgExp;
-                        document.getElementById('vFacName').innerText = data.cFacName;
-                        document.getElementById('vFacLic').innerText = data.cFacLic;
+                try {
+                    // فك تشفير البيانات المدمجة في الرابط وعرضها فوراً
+                    const decodedString = decodeURIComponent(atob(encodedData));
+                    const data = JSON.parse(decodedString);
 
-                        if(data.hImg) document.getElementById('outHeaderImg3').src = data.hImg;
-                        if(data.uImg) document.getElementById('outUserImg3').src = data.uImg;
-                    } else {
-                        alert("تنبيه: الشهادة المطلوبة غير متوفرة أو تم إلغاؤها من السيرفر الرئيسي.");
-                    }
-                }).catch(err => {
-                    console.error("خطأ أثناء استدعاء السيرفر: ", err);
-                });
+                    document.getElementById('vCertNo').innerText = data.cNo;
+                    document.getElementById('vIssueDate').innerText = data.cIssueDate;
+                    document.getElementById('vExpiryDate').innerText = data.cExpiryDate;
+                    document.getElementById('vName').innerText = data.cName;
+                    document.getElementById('vIdNo').innerText = data.cIdNo;
+                    document.getElementById('vGender').innerText = data.cGender;
+                    document.getElementById('vNat').innerText = data.cNat;
+                    document.getElementById('vJob').innerText = data.cJob;
+                    document.getElementById('vProg').innerText = data.cProg;
+                    document.getElementById('vProgExp').innerText = data.cProgExp;
+                    document.getElementById('vFacName').innerText = data.cFacName;
+                    document.getElementById('vFacLic').innerText = data.cFacLic;
+
+                    // جلب الصور المحفوظة محلياً داخل الهاتف من الـ Session/Local Storage لتظهر فوراً مع الصفحة
+                    const storedHImg = localStorage.getItem('h_' + data.uid);
+                    const storedUImg = localStorage.getItem('u_' + data.uid);
+                    
+                    if(storedHImg) document.getElementById('outHeaderImg3').src = storedHImg;
+                    if(storedUImg) document.getElementById('outUserImg3').src = storedUImg;
+
+                } catch (err) {
+                    alert("تنبيه: عذراً، لم نتمكن من قراءة بيانات الباركود بالشكل الصحيح.");
+                }
             }
         });
 
@@ -280,32 +265,36 @@
                         loadedCount++;
                         if(loadedCount === 2) {
                             
-                            // تعديل ذكي: إنشاء مُعرّف فريد يربط رقم الهوية بالوقت الحالي بالملي ثانية لضمان عدم التكرار مطلقاً
-                            const uniqueCertId = cIdNo + "_" + Date.now();
+                            const uniqueUid = cIdNo + "_" + Date.now();
                             
-                            // إعداد الرابط الذكي الموجه للسيرفر بالمعرّف الجديد الفريد
-                            const liveTrackingUrl = window.location.origin + window.location.pathname + "?id=" + uniqueCertId;
+                            // حفظ الصور في ذاكرة المتصفح للوصول الفوري السريع جداً عند المسح
+                            try {
+                                localStorage.setItem('h_' + uniqueUid, headerBase64);
+                                localStorage.setItem('u_' + uniqueUid, userBase64);
+                            } catch(e) {
+                                console.log("حجم الصور كبير بالنسبة للتخزين الفوري السريع، سيتم عرض النصوص كاملة ومباشرة.");
+                            }
+
+                            // تجميع كافة البيانات النصية وتشفيرها داخل الرابط لتعمل وتظهر في نفس اللحظة
+                            const dataObj = {
+                                uid: uniqueUid, cNo: cNo, cPlace: cPlace, cExpiryDate: cExpiryDate, 
+                                cName: cName, cIdNo: cIdNo, cGender: cGender, cNat: cNat, 
+                                cJob: cJob, cIssueDate: cIssueDate, cProg: cProg, 
+                                cProgExp: cProgExp, cFacName: cFacName, cFacLic: cFacLic
+                            };
                             
-                            // رفع البيانات كاملة تحت السجل الفريد الجديد إلى السيرفر الرئيسي
-                            database.ref('certificates/' + uniqueCertId).set({
-                                cNo: cNo, cPlace: cPlace, cExpiryDate: cExpiryDate, cName: cName,
-                                cIdNo: cIdNo, cGender: cGender, cNat: cNat, cJob: cJob,
-                                cIssueDate: cIssueDate, cProg: cProg, cProgExp: cProgExp,
-                                cFacName: cFacName, cFacLic: cFacLic,
-                                hImg: headerBase64, uImg: userBase64,
-                                timestamp: Date.now()
-                            }).then(() => {
-                                console.log("تم المزامنة وحفظ الشهادة بنجاح في قاعدة البيانات بسجل فريد!");
-                            }).catch(err => {
-                                alert("خطأ في الاتصال بقاعدة البيانات، يرجى مراجعة الصلاحيات.");
-                            });
+                            const jsonString = JSON.stringify(dataObj);
+                            const encodedData = btoa(encodeURIComponent(jsonString));
+                            
+                            // توليد الرابط السريع الفوري المدمج بكامل المعلومات
+                            const liveTrackingUrl = window.location.origin + window.location.pathname + "?d=" + encodedData;
 
                             document.getElementById("outQrImg").innerHTML = "";
                             new QRCode(document.getElementById("outQrImg"), { 
                                 text: liveTrackingUrl, 
                                 width: 115, 
                                 height: 115, 
-                                correctLevel: QRCode.CorrectLevel.M
+                                correctLevel: QRCode.CorrectLevel.L // تم تقليل مستوى التصحيح لضمان قراءة الباركود بسرعة وسهولة لكثرة البيانات
                             });
 
                             document.getElementById('inputFormContainer').style.display = 'none';
@@ -338,7 +327,7 @@
                 const c3 = await html2canvas(p3, opts); pdf.addImage(c3.toDataURL('image/png'), 'PNG', 0, 0, 116, 166);
                 pdf.save('Balady_Final_Form_' + filename + '.pdf');
 
-                if (window.location.href.includes('id=')) {
+                if (window.location.href.includes('d=')) {
                     p1.style.display = 'none'; p2.style.display = 'none';
                 } else {
                     p3.style.display = 'none';
