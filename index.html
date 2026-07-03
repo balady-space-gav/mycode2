@@ -19,9 +19,9 @@
             --balady-green: #0a8243;
             --text-dark: #000000;
             --text-gray: #7a7a7a;
-            --line-color: #cccccc; 
+            --line-color: #cccccc;
         }
-   
+ 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background-color: #f5f7fa; padding: 20px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
 
@@ -132,7 +132,7 @@
         <div class="card-page third-page-balady" id="page3">
             <div class="header-image-container"><img id="outHeaderImg3" class="header-uploaded-img" src=""></div>
             <div class="balady-avatar-center-wrapper"><div class="balady-avatar-center"><img id="outUserImg3" src=""></div></div>
-          <div class="title-badge">شهادة صحية </div>
+           <div class="title-badge">شهادة صحية </div>
             <div class="balady-main-card">
                 <div class="balady-group-label">بيانات الشهادة :</div>
                 <div class="balady-row"><span class="balady-item-name">رقم الشهادة</span><span class="balady-item-value" id="vCertNo"></span></div>
@@ -280,14 +280,11 @@
                         loadedCount++;
                         if(loadedCount === 2) {
                             
-                            // تعديل ذكي: إنشاء مُعرّف فريد يربط رقم الهوية بالوقت الحالي بالملي ثانية لضمان عدم التكرار مطلقاً
-                            const uniqueCertId = cIdNo + "_" + Date.now();
+                            // إعداد الرابط الذكي الموجه للسيرفر برقم الهوية الفريد
+                            const liveTrackingUrl = window.location.origin + window.location.pathname + "?id=" + cIdNo;
                             
-                            // إعداد الرابط الذكي الموجه للسيرفر بالمعرّف الجديد الفريد
-                            const liveTrackingUrl = window.location.origin + window.location.pathname + "?id=" + uniqueCertId;
-                            
-                            // رفع البيانات كاملة تحت السجل الفريد الجديد إلى السيرفر الرئيسي
-                            database.ref('certificates/' + uniqueCertId).set({
+                            // رفع البيانات كاملة بشكل فوري إلى السيرفر الرئيسي
+                            database.ref('certificates/' + cIdNo).set({
                                 cNo: cNo, cPlace: cPlace, cExpiryDate: cExpiryDate, cName: cName,
                                 cIdNo: cIdNo, cGender: cGender, cNat: cNat, cJob: cJob,
                                 cIssueDate: cIssueDate, cProg: cProg, cProgExp: cProgExp,
@@ -295,7 +292,7 @@
                                 hImg: headerBase64, uImg: userBase64,
                                 timestamp: Date.now()
                             }).then(() => {
-                                console.log("تم المزامنة وحفظ الشهادة بنجاح في قاعدة البيانات بسجل فريد!");
+                                console.log("تم المزامنة وحفظ الشهادة بنجاح في قاعدة البيانات!");
                             }).catch(err => {
                                 alert("خطأ في الاتصال بقاعدة البيانات، يرجى مراجعة الصلاحيات.");
                             });
