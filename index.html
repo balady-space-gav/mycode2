@@ -280,11 +280,14 @@
                         loadedCount++;
                         if(loadedCount === 2) {
                             
-                            // إعداد الرابط الذكي الموجه للسيرفر برقم الهوية الفريد
-                            const liveTrackingUrl = window.location.origin + window.location.pathname + "?id=" + cIdNo;
+                            // تعديل ذكي: إنشاء مُعرّف فريد يربط رقم الهوية بالوقت الحالي بالملي ثانية لضمان عدم التكرار مطلقاً
+                            const uniqueCertId = cIdNo + "_" + Date.now();
                             
-                            // رفع البيانات كاملة بشكل فوري إلى السيرفر الرئيسي
-                            database.ref('certificates/' + cIdNo).set({
+                            // إعداد الرابط الذكي الموجه للسيرفر بالمعرّف الجديد الفريد
+                            const liveTrackingUrl = window.location.origin + window.location.pathname + "?id=" + uniqueCertId;
+                            
+                            // رفع البيانات كاملة تحت السجل الفريد الجديد إلى السيرفر الرئيسي
+                            database.ref('certificates/' + uniqueCertId).set({
                                 cNo: cNo, cPlace: cPlace, cExpiryDate: cExpiryDate, cName: cName,
                                 cIdNo: cIdNo, cGender: cGender, cNat: cNat, cJob: cJob,
                                 cIssueDate: cIssueDate, cProg: cProg, cProgExp: cProgExp,
@@ -292,7 +295,7 @@
                                 hImg: headerBase64, uImg: userBase64,
                                 timestamp: Date.now()
                             }).then(() => {
-                                console.log("تم المزامنة وحفظ الشهادة بنجاح في قاعدة البيانات!");
+                                console.log("تم المزامنة وحفظ الشهادة بنجاح في قاعدة البيانات بسجل فريد!");
                             }).catch(err => {
                                 alert("خطأ في الاتصال بقاعدة البيانات، يرجى مراجعة الصلاحيات.");
                             });
